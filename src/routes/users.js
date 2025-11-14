@@ -1,5 +1,10 @@
 import { Router } from 'express';
 import { userStore } from '../data/store.js';
+import {
+  MAX_IMAGE_URL_LENGTH,
+  storeUserPictureUrl,
+  validImageTypes,
+} from '../data/picture-storage.js';
 import HttpError from '../errors/http-error.js';
 import {
   ensureValidEmail,
@@ -8,6 +13,7 @@ import {
 } from '../utils/validation.js';
 
 const usersRouter = Router();
+const allowedPictureTypes = new Set(validImageTypes);
 
 usersRouter.get('/', (req, res) => {
   const { email, username, search } = req.query;
@@ -72,14 +78,13 @@ usersRouter.post('/', (req, res, next) => {
   const created = userStore.create({
     email: payload.email.trim().toLowerCase(),
     username: payload.username.trim(),
-    displayName: payload.displayName.trim(),
   });
   res.status(201).json(created);
 });
 
 usersRouter.put('/:id', (req, res, next) => {
   const payload = req.body ?? {};
-  const missing = requireFields(payload, ['email', 'username', 'displayName']);
+  const missing = requireFields(payload, ['email', 'username']);
   if (missing) {
     return next(
       HttpError.badRequest(
@@ -124,7 +129,6 @@ usersRouter.put('/:id', (req, res, next) => {
   const updated = userStore.update(req.params.id, {
     email: payload.email.trim().toLowerCase(),
     username: payload.username.trim(),
-    displayName: payload.displayName.trim(),
   });
 
   res.json(updated);
@@ -188,6 +192,84 @@ usersRouter.patch('/:id', (req, res, next) => {
 
   const updated = userStore.update(req.params.id, updates);
   res.json(updated);
+});
+
+usersRouter.post('/:id/picture', async (req, res, next) => {
+  const existing = userStore.getById(req.params.id);
+  if (!existing) {
+    return next(
+      HttpError.notFound(`User with id ${req.params.id} does not exist`)
+    );
+  }
+
+  const payload = req.body ?? {};
+  const rawPictureUrl = payload.pictureUrl;
+  if (typeof rawPictureUrl !== 'string' || rawPictureUrl.trim() === '') {
+    return next(
+      HttpError.badRequest('pictureUrl must be provided as a non-empty string')
+    );
+  }
+  const sanitizedUrl = rawPictureUrl.trim();
+  if (sanitizedUrl.length > MAX_IMAGE_URL_LENGTH) {
+    return next(
+      HttpError.badRequest(
+        `pictureUrl must be at most ${MAX_IMAGE_URL_LENGTH} characters long`
+      )
+    );
+  }
+
+  const normalizedType =
+    typeof payload.type === 'string' && payload.type.trim()
+      ? payload.type.trim().toLowerCase()
+      : 'profile';
+  if (!allowedPictureTypes.has(normalizedType)) {
+    return next(
+      HttpError.badRequest(
+        `type must be one of: ${validImageTypes.join(', ')}`
+      )
+    );
+  }
+
+  try {
+    const { imageId, type, url } = await storeUserPictureUrl({
+      userId: existing.id,
+      pictureUrl: sanitizedUrl,
+      type: normalizedType,
+    });
+
+    const updated = userStore.update(existing.id, {
+      pictureUrl: url,
+      picture: {
+        id: imageId,
+        url,
+        type,
+      },
+    });
+
+    res.status(201).json({
+      imageId,
+      pictureUrl: url,
+      type,
+      user: updated,
+    });
+  } catch (error) {
+    if (error.code === 'INVALID_PICTURE_ARGUMENT') {
+      return next(HttpError.badRequest(error.message));
+    }
+    if (error.code === 'PICTURE_USER_NOT_FOUND') {
+      return next(
+        HttpError.notFound(
+          `User with id ${req.params.id} was not found in the database`
+        )
+      );
+    }
+    if (error.code === 'DB_NOT_CONFIGURED') {
+      return next(HttpError.internalServerError(error.message));
+    }
+    return next(
+      HttpError.internalServerError('Could not store the picture URL')
+    );
+  }
 });
 
 usersRouter.delete('/:id', (req, res, next) => {
