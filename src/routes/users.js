@@ -1,5 +1,10 @@
 import { Router } from 'express';
-import { userStore } from '../data/store.js';
+import {
+  artistStore,
+  interactionStore,
+  postStore,
+  userStore,
+} from '../data/store.js';
 import {
   MAX_IMAGE_URL_LENGTH,
   storeUserPictureUrl,
@@ -14,6 +19,7 @@ import {
 
 const usersRouter = Router();
 const allowedPictureTypes = new Set(validImageTypes);
+const allowedRoles = new Set(['user', 'artist', 'admin']);
 
 usersRouter.get('/', (req, res) => {
   const { email, username, search } = req.query;
@@ -36,6 +42,43 @@ usersRouter.get('/', (req, res) => {
   res.json(users);
 });
 
+usersRouter.get('/:id/overview', (req, res, next) => {
+  const user = userStore.getById(req.params.id);
+  if (!user) {
+    return next(
+      HttpError.notFound(`User with id ${req.params.id} does not exist`)
+    );
+  }
+
+  const artistProfile = artistStore.find(
+    (artist) => artist.userId === user.id
+  )[0];
+  const authoredPosts = artistProfile
+    ? postStore.find((post) => post.artistId === artistProfile.id)
+    : [];
+  const interactions = interactionStore.find(
+    (interaction) => interaction.userId === user.id
+  );
+  const interactionsByType = interactions.reduce((acc, interaction) => {
+    acc[interaction.type] = (acc[interaction.type] ?? 0) + 1;
+    return acc;
+  }, {});
+
+  res.json({
+    user,
+    profile: {
+      role: user.role,
+      bio: user.bio ?? null,
+      artist: artistProfile ?? null,
+    },
+    activity: {
+      totalInteractions: interactions.length,
+      interactionsByType,
+      authoredPosts,
+    },
+  });
+});
+
 usersRouter.get('/:id', (req, res, next) => {
   const user = userStore.getById(req.params.id);
   if (!user) {
@@ -48,7 +91,11 @@ usersRouter.get('/:id', (req, res, next) => {
 
 usersRouter.post('/', (req, res, next) => {
   const payload = req.body ?? {};
-  const missing = requireFields(payload, ['email', 'username', 'displayName']);
+  const missing = requireFields(payload, [
+    'email',
+    'username',
+    'displayName',
+  ]);
   if (missing) {
     return next(
       HttpError.badRequest(
@@ -59,6 +106,15 @@ usersRouter.post('/', (req, res, next) => {
 
   if (!ensureValidEmail(payload.email)) {
     return next(HttpError.badRequest('email must be a valid email address'));
+  }
+
+  const normalizedRole = normalize(payload.role || 'user');
+  if (!allowedRoles.has(normalizedRole)) {
+    return next(
+      HttpError.badRequest(
+        `role must be one of: ${Array.from(allowedRoles).join(', ')}`
+      )
+    );
   }
 
   const normalizedEmail = normalize(payload.email);
@@ -78,13 +134,24 @@ usersRouter.post('/', (req, res, next) => {
   const created = userStore.create({
     email: payload.email.trim().toLowerCase(),
     username: payload.username.trim(),
+    displayName: payload.displayName.trim(),
+    role: normalizedRole,
+    bio:
+      payload.bio !== undefined && payload.bio !== null
+        ? payload.bio.trim()
+        : null,
   });
   res.status(201).json(created);
 });
 
 usersRouter.put('/:id', (req, res, next) => {
   const payload = req.body ?? {};
-  const missing = requireFields(payload, ['email', 'username']);
+  const missing = requireFields(payload, [
+    'email',
+    'username',
+    'displayName',
+    'role',
+  ]);
   if (missing) {
     return next(
       HttpError.badRequest(
@@ -129,6 +196,12 @@ usersRouter.put('/:id', (req, res, next) => {
   const updated = userStore.update(req.params.id, {
     email: payload.email.trim().toLowerCase(),
     username: payload.username.trim(),
+    displayName: payload.displayName.trim(),
+    role: normalizedRole,
+    bio:
+      payload.bio !== undefined && payload.bio !== null
+        ? payload.bio.trim()
+        : null,
   });
 
   res.json(updated);
@@ -136,11 +209,17 @@ usersRouter.put('/:id', (req, res, next) => {
 
 usersRouter.patch('/:id', (req, res, next) => {
   const payload = req.body ?? {};
-  const { email, username, displayName } = payload;
-  if (email === undefined && username === undefined && displayName === undefined) {
+  const { email, username, displayName, role, bio } = payload;
+  if (
+    email === undefined &&
+    username === undefined &&
+    displayName === undefined &&
+    role === undefined &&
+    bio === undefined
+  ) {
     return next(
       HttpError.badRequest(
-        'Provide at least one of email, username, or displayName'
+        'Provide at least one of email, username, displayName, role, or bio'
       )
     );
   }
@@ -188,6 +267,22 @@ usersRouter.patch('/:id', (req, res, next) => {
 
   if (displayName !== undefined) {
     updates.displayName = displayName.trim();
+  }
+
+  if (role !== undefined) {
+    const normalizedRole = normalize(role);
+    if (!allowedRoles.has(normalizedRole)) {
+      return next(
+        HttpError.badRequest(
+          `role must be one of: ${Array.from(allowedRoles).join(', ')}`
+        )
+      );
+    }
+    updates.role = normalizedRole;
+  }
+
+  if (bio !== undefined) {
+    updates.bio = bio?.trim() ?? null;
   }
 
   const updated = userStore.update(req.params.id, updates);

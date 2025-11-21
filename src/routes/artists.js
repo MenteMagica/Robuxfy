@@ -1,5 +1,10 @@
 import { Router } from 'express';
-import { artistStore } from '../data/store.js';
+import {
+  artistStore,
+  interactionStore,
+  postStore,
+  userStore,
+} from '../data/store.js';
 import HttpError from '../errors/http-error.js';
 import { normalize, requireFields } from '../utils/validation.js';
 
@@ -22,6 +27,34 @@ artistsRouter.get('/', (req, res) => {
     );
   }
   res.json(artists);
+});
+
+artistsRouter.get('/:id/overview', (req, res, next) => {
+  const artist = artistStore.getById(req.params.id);
+  if (!artist) {
+    return next(
+      HttpError.notFound(`Artist with id ${req.params.id} does not exist`)
+    );
+  }
+
+  const posts = postStore.find((post) => post.artistId === artist.id);
+  const interactions = interactionStore.find((interaction) =>
+    posts.some((post) => post.id === interaction.postId)
+  );
+  const interactionsByType = interactions.reduce((acc, interaction) => {
+    acc[interaction.type] = (acc[interaction.type] ?? 0) + 1;
+    return acc;
+  }, {});
+
+  res.json({
+    artist,
+    posts,
+    metrics: {
+      totalPosts: posts.length,
+      totalInteractions: interactions.length,
+      interactionsByType,
+    },
+  });
 });
 
 artistsRouter.get('/:id', (req, res, next) => {
@@ -52,8 +85,28 @@ artistsRouter.post('/', (req, res, next) => {
     return next(HttpError.conflict('stageName is already in use'));
   }
 
+  let userId = null;
+  if (payload.userId !== undefined) {
+    if (typeof payload.userId !== 'string' || payload.userId.trim() === '') {
+      return next(
+        HttpError.badRequest('userId must be provided as a non-empty string')
+      );
+    }
+    const user = userStore.getById(payload.userId.trim());
+    if (!user) {
+      return next(HttpError.notFound('userId does not match any user'));
+    }
+    if (user.role !== 'artist') {
+      return next(
+        HttpError.badRequest('userId must belong to a user with artist role')
+      );
+    }
+    userId = user.id;
+  }
+
   const created = artistStore.create({
     stageName: payload.stageName.trim(),
+    userId,
     genre: payload.genre?.trim() ?? null,
     description: payload.description?.trim() ?? null,
   });
@@ -88,8 +141,28 @@ artistsRouter.put('/:id', (req, res, next) => {
     return next(HttpError.conflict('stageName is already in use'));
   }
 
+  let userId = existing.userId ?? null;
+  if (payload.userId !== undefined) {
+    if (typeof payload.userId !== 'string' || payload.userId.trim() === '') {
+      return next(
+        HttpError.badRequest('userId must be provided as a non-empty string')
+      );
+    }
+    const user = userStore.getById(payload.userId.trim());
+    if (!user) {
+      return next(HttpError.notFound('userId does not match any user'));
+    }
+    if (user.role !== 'artist') {
+      return next(
+        HttpError.badRequest('userId must belong to a user with artist role')
+      );
+    }
+    userId = user.id;
+  }
+
   const updated = artistStore.update(req.params.id, {
     stageName: payload.stageName.trim(),
+    userId,
     genre:
       payload.genre !== undefined ? payload.genre?.trim() ?? null : existing.genre,
     description:
@@ -104,10 +177,15 @@ artistsRouter.put('/:id', (req, res, next) => {
 artistsRouter.patch('/:id', (req, res, next) => {
   const payload = req.body ?? {};
   const { stageName, genre, description } = payload;
-  if (stageName === undefined && genre === undefined && description === undefined) {
+  if (
+    stageName === undefined &&
+    genre === undefined &&
+    description === undefined &&
+    payload.userId === undefined
+  ) {
     return next(
       HttpError.badRequest(
-        'Provide at least one of stageName, genre, or description'
+        'Provide at least one of stageName, genre, description, or userId'
       )
     );
   }
@@ -144,8 +222,72 @@ artistsRouter.patch('/:id', (req, res, next) => {
     updates.description = description?.trim() ?? null;
   }
 
+  if (payload.userId !== undefined) {
+    if (typeof payload.userId !== 'string' || payload.userId.trim() === '') {
+      return next(
+        HttpError.badRequest('userId must be provided as a non-empty string')
+      );
+    }
+    const user = userStore.getById(payload.userId.trim());
+    if (!user) {
+      return next(HttpError.notFound('userId does not match any user'));
+    }
+    if (user.role !== 'artist') {
+      return next(
+        HttpError.badRequest('userId must belong to a user with artist role')
+      );
+    }
+    updates.userId = user.id;
+  }
+
   const updated = artistStore.update(req.params.id, updates);
   res.json(updated);
+});
+
+artistsRouter.get('/:id/posts', (req, res, next) => {
+  const artist = artistStore.getById(req.params.id);
+  if (!artist) {
+    return next(
+      HttpError.notFound(`Artist with id ${req.params.id} does not exist`)
+    );
+  }
+
+  const posts = postStore.find((post) => post.artistId === artist.id);
+  res.json(posts);
+});
+
+artistsRouter.post('/:id/posts', (req, res, next) => {
+  const artist = artistStore.getById(req.params.id);
+  if (!artist) {
+    return next(
+      HttpError.notFound(`Artist with id ${req.params.id} does not exist`)
+    );
+  }
+
+  const payload = req.body ?? {};
+  const missing = requireFields(payload, ['title', 'body']);
+  if (missing) {
+    return next(
+      HttpError.badRequest(
+        `Missing required fields: ${missing.join(', ')}`
+      )
+    );
+  }
+
+  const normalizedVisibility =
+    typeof payload.visibility === 'string' && payload.visibility.trim() !== ''
+      ? payload.visibility.trim().toLowerCase()
+      : 'public';
+
+  const created = postStore.create({
+    artistId: artist.id,
+    title: payload.title.trim(),
+    body: payload.body.trim(),
+    visibility: normalizedVisibility,
+    publishedAt: new Date().toISOString(),
+  });
+
+  res.status(201).json(created);
 });
 
 artistsRouter.delete('/:id', (req, res, next) => {

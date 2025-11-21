@@ -64,20 +64,52 @@ function createStore(initialEntities = []) {
   };
 }
 
+const seedArtistUserId = uuid();
+const seedSecondArtistUserId = uuid();
+const seedStandardUserId = uuid();
+const seedAdminUserId = uuid();
+
+const seedFirstArtistId = uuid();
+const seedSecondArtistId = uuid();
+
 const userStore = createStore([
   {
-    id: uuid(),
+    id: seedArtistUserId,
     email: 'alex@example.com',
     username: 'alex123',
     displayName: 'Alex The Collector',
+    role: 'artist',
+    bio: 'Produces electronic beats and visual art.',
     createdAt: timestamp(),
     updatedAt: timestamp(),
   },
   {
-    id: uuid(),
+    id: seedSecondArtistUserId,
     email: 'jamie@example.com',
     username: 'jamie_art',
     displayName: 'Jamie',
+    role: 'artist',
+    bio: 'Indie pop singer and songwriter.',
+    createdAt: timestamp(),
+    updatedAt: timestamp(),
+  },
+  {
+    id: seedStandardUserId,
+    email: 'patricia@example.com',
+    username: 'patricia98',
+    displayName: 'Patricia',
+    role: 'user',
+    bio: 'Music fan who loves supporting independent artists.',
+    createdAt: timestamp(),
+    updatedAt: timestamp(),
+  },
+  {
+    id: seedAdminUserId,
+    email: 'admin@example.com',
+    username: 'admin',
+    displayName: 'Robuxfy Admin',
+    role: 'admin',
+    bio: 'Keeps the platform organized.',
     createdAt: timestamp(),
     updatedAt: timestamp(),
   },
@@ -85,16 +117,18 @@ const userStore = createStore([
 
 const artistStore = createStore([
   {
-    id: uuid(),
+    id: seedFirstArtistId,
     stageName: 'DJ Nebula',
+    userId: seedArtistUserId,
     genre: 'Electronic',
     description: 'Space inspired beats.',
     createdAt: timestamp(),
     updatedAt: timestamp(),
   },
   {
-    id: uuid(),
+    id: seedSecondArtistId,
     stageName: 'Luna Sketch',
+    userId: seedSecondArtistUserId,
     genre: 'Indie Pop',
     description: 'Dreamy vocals and guitars.',
     createdAt: timestamp(),
@@ -102,4 +136,57 @@ const artistStore = createStore([
   },
 ]);
 
-export { createStore, userStore, artistStore };
+const postStore = createStore([
+  {
+    id: uuid(),
+    artistId: seedFirstArtistId,
+    title: 'New cosmic beat drop',
+    body: 'I just published a new track inspired by meteor showers.',
+    visibility: 'public',
+    publishedAt: timestamp(),
+    createdAt: timestamp(),
+    updatedAt: timestamp(),
+  },
+  {
+    id: uuid(),
+    artistId: seedSecondArtistId,
+    title: 'Acoustic session this weekend',
+    body: 'Streaming a stripped-down set on Saturday. Join in!',
+    visibility: 'public',
+    publishedAt: timestamp(),
+    createdAt: timestamp(),
+    updatedAt: timestamp(),
+  },
+]);
+
+const interactionStore = createStore([
+  {
+    id: uuid(),
+    postId: postStore.getAll()[0].id,
+    userId: seedStandardUserId,
+    type: 'like',
+    message: null,
+    createdAt: timestamp(),
+    updatedAt: timestamp(),
+  },
+  {
+    id: uuid(),
+    postId: postStore.getAll()[0].id,
+    userId: seedStandardUserId,
+    type: 'comment',
+    message: 'This track is amazing! 🔥',
+    createdAt: timestamp(),
+    updatedAt: timestamp(),
+  },
+  {
+    id: uuid(),
+    postId: postStore.getAll()[1].id,
+    userId: seedArtistUserId,
+    type: 'view',
+    message: null,
+    createdAt: timestamp(),
+    updatedAt: timestamp(),
+  },
+]);
+
+export { createStore, userStore, artistStore, postStore, interactionStore };

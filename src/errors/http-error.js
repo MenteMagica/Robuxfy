@@ -19,4 +19,11 @@ export default class HttpError extends Error {
   static conflict(message, details) {
     return new HttpError(409, message, { name: 'ConflictError', details });
   }
+
+  static internalServerError(message, details) {
+    return new HttpError(500, message, {
+      name: 'InternalServerError',
+      details,
+    });
+  }
 }
