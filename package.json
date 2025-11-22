@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "test": "node --test"
   },
   "keywords": [
     "express",
@@ -17,6 +18,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "mysql2": "^3.11.0",
     "express": "^4.19.2",
     "morgan": "^1.10.0",
     "uuid": "^9.0.1"
