@@ -1,0 +1,101 @@
+CREATE DATABASE IF NOT EXISTS db_robuxfy;
+USE db_robuxfy;
+
+-- ########## Associations ########## 
+CREATE TABLE IF NOT EXISTS composers (
+	id INT UNSIGNED AUTO_INCREMENT,
+	name VARCHAR(256) NOT NULL,
+	
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS records (
+	id INT UNSIGNED AUTO_INCREMENT,
+	name VARCHAR(256) NOT NULL,
+	
+	CONSTRAINT uq_records_name UNIQUE (name),
+	
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+-- ########## Medias ##########
+CREATE TABLE IF NOT EXISTS genres (
+	id SMALLINT UNSIGNED AUTO_INCREMENT,
+	name VARCHAR(256) NOT NULL,
+	
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS images (
+	id BIGINT UNSIGNED AUTO_INCREMENT,
+	type ENUM(
+		'users_profile',
+		'artists_banner',
+		'musics_cover',
+		'albums_cover',
+		'podcasts_cover',
+		'playlists_cover'
+	) NOT NULL,
+	url VARCHAR(1024) NOT NULL,
+	
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS musics (
+	id BIGINT UNSIGNED AUTO_INCREMENT,
+	title VARCHAR(256) NOT NULL,
+	release_date DATE NOT NULL,
+	url VARCHAR(1024) NOT NULL,
+	
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS albums (
+	id INT UNSIGNED AUTO_INCREMENT,
+	name VARCHAR(256) NOT NULL,
+	release_date DATE NOT NULL,	
+	
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS podcasts (
+	id BIGINT UNSIGNED AUTO_INCREMENT,
+	title VARCHAR(256) NOT NULL,
+	description VARCHAR(2048),
+	release_date DATE NOT NULL,
+	url VARCHAR(1024) NOT NULL,
+	
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS playlists (
+	id BIGINT UNSIGNED AUTO_INCREMENT,
+	name VARCHAR(256) NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	cover_image_custom VARCHAR(1024),
+	
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+-- ########## Entities ##########
+CREATE TABLE IF NOT EXISTS users (
+	id INT UNSIGNED AUTO_INCREMENT,
+	username VARCHAR(64) NOT NULL,
+	date_of_birth DATE NOT NULL,
+	email VARCHAR(128) NOT NULL,
+	password_hash VARCHAR(128) NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	
+	CONSTRAINT uq_users_username UNIQUE (username),
+	CONSTRAINT uq_users_email UNIQUE (email),
+	
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS artists (
+	id INT UNSIGNED,
+	name VARCHAR(64) NOT NULL,
+	biography VARCHAR(2048),
+	
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
