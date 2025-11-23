@@ -111,3 +111,13 @@ curl -X POST http://localhost:3000/api/users \
 ```
 
 This project stores data in memory only. Restarting the server resets the collections to the seeded sample data.
+
+## Tests
+
+The repository uses Node's built-in test runner. To execute the suite:
+
+```bash
+npm test
+```
+
+See [TESTING_TUTORIAL.md](TESTING_TUTORIAL.md) for guidance on what each test asserts and how to extend the coverage alongside the stored procedures described in `slaman.txt`.
