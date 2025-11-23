@@ -8,7 +8,10 @@ function getMissingDbEnvVars(env = process.env) {
   );
 }
 
-async function createDbPool(env = process.env) {
+async function createDbPool(
+  env = process.env,
+  mysqlImporter = () => import('mysql2/promise')
+) {
   const missing = getMissingDbEnvVars(env);
   if (missing.length > 0) {
     const error = new Error(
@@ -24,7 +27,7 @@ async function createDbPool(env = process.env) {
     ? Number.parseInt(env.DB_CONNECTION_LIMIT, 10)
     : 10;
 
-  const mysql = await import('mysql2/promise');
+  const mysql = await mysqlImporter();
 
   return mysql.createPool({
     host: env.DB_HOST,
@@ -37,9 +40,9 @@ async function createDbPool(env = process.env) {
   });
 }
 
-function getDbPool(env = process.env) {
+function getDbPool(env = process.env, mysqlImporter) {
   if (!poolPromise) {
-    poolPromise = createDbPool(env);
+    poolPromise = createDbPool(env, mysqlImporter);
   }
   return poolPromise;
 }
