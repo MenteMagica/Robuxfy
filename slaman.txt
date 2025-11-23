@@ -1,0 +1,126 @@
+####### PESQUISA POR CONTEÚDO #######
+
+A ideia aqui é ter o total de 10 resultados para a pesquisa, então precisa executar essas queries e vai ser retornado a quantidade de cada item mostrada no limit. Eu gostaria que voltasse para o front na seguinte ordem:
+
+-- artistas
+SELECT name, 'artist' AS type
+FROM artists
+WHERE name LIKE CONCAT('%', ?, '%')
+LIMIT 1;
+
+-- músicas
+SELECT title, 'music' AS type
+FROM musics
+WHERE title LIKE CONCAT('%', ?, '%')
+LIMIT 4;
+
+-- podcasts
+SELECT title, 'podcast' AS type
+FROM podcasts
+WHERE title LIKE CONCAT('%', ?, '%')
+LIMIT 3;
+
+-- álbuns
+SELECT name, 'album' AS type
+FROM albums
+WHERE name LIKE CONCAT('%', ?, '%')
+LIMIT 2;
+
+
+
+####### PROCEDURES #######
+Criei procedimentos no banco de dados para facilitar sua vida. Mas você precisa limpar os dados caso vier com algum problema.
+
+Cria um novo usuário
+CALL create_user(user_json)
+
+Estrutura do JSON:
+{
+  "username": "usuario123",
+  "date_of_birth": "1995-08-15",
+  "email": "usuario@example.com",
+  "password_hash": "hash_da_senha_aqui",
+  "profile_picture": { 
+    "type": "users_profile",
+    "url": "https://exemplo.com/images/profile.png"
+  }
+}
+A foto de perfil pode não vir, isso está tratado dentro do banco, só não mandar profile picture.
+
+
+Cria um novo artista
+CALL create_artist(artist_json)
+
+Estrutura do JSON:
+{
+  "user_id": 123,
+  "name": "Nome do Artista",
+  "biography": "Uma breve biografia do artista.",
+  "banner": {
+    "type": "artists_banner",
+    "url": "https://exemplo.com/images/banner.png"
+  }
+}
+A mesma coisa da foto do usuário no banner do artista, só não mandar o banner.
+
+Cria uma nova música
+CALL create_single_music(album_json)
+
+Estrutura JSON:
+{
+  "title": "Minha Música",
+  "release_date": "2025-01-01",
+  "url": "https://exemplo.com/audio/musica.mp3",
+  "album_id": 1,
+  "cover_image": {
+    "type": "musics_cover",
+    "url": "https://exemplo.com/images/capa.png"
+  },
+  "artists": [10, 14, 22]
+}
+Mesma coisa das outras imagens.
+
+Cria um novo album
+CALL create_album_with_musics(album_json)
+
+Estrutura JSON:
+{
+  "name": "Greatest Hits",
+  "release_date": "2025-01-01",
+  "artist_id": 1,
+  "cover_image": {
+    "type": "albums_cover",
+    "url": "https://exemplo.com/images/album_capa.png"
+  },
+  "musics": [
+    {
+      "title": "Música 1",
+      "release_date": "2025-01-01",
+      "url": "https://exemplo.com/audio/musica1.mp3",
+      "artists": [10, 14, 22]
+    },
+    {
+      "title": "Música 2",
+      "release_date": "2025-01-02",
+      "url": "https://exemplo.com/audio/musica2.mp3",
+      "artists": [10]
+    }
+  ]
+}
+O mesmo das outras imagens
+
+Cria um episodio podcast
+CALL create_podcast(podcast_json)
+
+Estrutura JSON:
+{
+  "title": "Meu Primeiro Podcast",
+  "description": "Um episódio introdutório sobre tecnologia e música.",
+  "release_date": "2025-11-22",
+  "artist_id": 5,
+  "cover_image": {
+    "type": "podcasts_cover",
+    "url": "https://exemplo.com/images/podcast_capa.png"
+  }
+}
+O mesmo das outras imagens
