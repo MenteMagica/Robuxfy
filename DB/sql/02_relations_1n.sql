@@ -29,9 +29,8 @@ ALTER TABLE albums
         ON DELETE CASCADE;
 
 ALTER TABLE podcasts
-    ADD COLUMN cover_image_auto BIGINT UNSIGNED,
     ADD CONSTRAINT fk_podcasts_cover_image
-        FOREIGN KEY (cover_image_auto) REFERENCES images(id)
+        FOREIGN KEY (cover_image) REFERENCES images(id)
         ON DELETE SET NULL
         ON UPDATE CASCADE;
 

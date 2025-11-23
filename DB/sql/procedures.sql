@@ -1,10 +1,12 @@
 USE db_robuxfy;
 
-DROP PROCEDURE IF EXISTS create_user;
-DROP PROCEDURE IF EXISTS create_artist;
-DROP PROCEDURE IF EXISTS create_single_music;
-DROP PROCEDURE IF EXISTS create_album_with_musics;
-DROP PROCEDURE IF EXISTS create_podcast;
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS create_user $$
+DROP PROCEDURE IF EXISTS create_artist $$
+DROP PROCEDURE IF EXISTS create_single_music $$
+DROP PROCEDURE IF EXISTS create_album_with_musics $$
+DROP PROCEDURE IF EXISTS create_podcast $$
 
 -- create user with optional profile picture
 CREATE PROCEDURE create_user(IN user_json JSON)
@@ -16,13 +18,13 @@ BEGIN
 
     -- profile picture (optional)
     DECLARE v_image_type ENUM(
-		'users_profile',
-		'artists_banner',
-		'musics_cover',
-		'albums_cover',
-		'podcasts_cover',
-		'playlists_cover'
-	);
+               'users_profile',
+               'artists_banner',
+               'musics_cover',
+               'albums_cover',
+               'podcasts_cover',
+               'playlists_cover'
+       );
     DECLARE v_image_url VARCHAR(1024);
     DECLARE v_image_id BIGINT DEFAULT NULL;
 
@@ -43,12 +45,13 @@ BEGIN
         -- get inserted profile picture id
         SET v_image_id = LAST_INSERT_ID();
     END IF;
+
     -- insert user
     INSERT INTO users (username, date_of_birth, email, password_hash, profile_picture)
     VALUES (v_username, v_date_of_birth, v_email, v_password_hash, v_image_id);
 
     COMMIT;
-END;
+END $$
 
 -- create artist with optional banner image
 CREATE PROCEDURE create_artist(IN artist_json JSON)
@@ -59,13 +62,13 @@ BEGIN
 
     -- banner image (optional)
     DECLARE v_image_type ENUM(
-		'users_profile',
-		'artists_banner',
-		'musics_cover',
-		'albums_cover',
-		'podcasts_cover',
-		'playlists_cover'
-	);
+               'users_profile',
+               'artists_banner',
+               'musics_cover',
+               'albums_cover',
+               'podcasts_cover',
+               'playlists_cover'
+       );
     DECLARE v_image_url VARCHAR(1024);
     DECLARE v_image_id BIGINT DEFAULT NULL;
 
@@ -85,12 +88,13 @@ BEGIN
         -- get inserted banner image id
         SET v_image_id = LAST_INSERT_ID();
     END IF;
+
     -- insert artist
     INSERT INTO artists(id, name, biography, artists_banner)
     VALUES (v_user_id, v_name, v_biography, v_image_id);
 
     COMMIT;
-END;
+END $$
 
 -- create single music with artists and optional cover image
 CREATE PROCEDURE create_single_music(IN music_json JSON)
@@ -102,7 +106,14 @@ BEGIN
     DECLARE v_album_id INT UNSIGNED;
 
     -- cover image (optional)
-    DECLARE v_image_type VARCHAR(64);
+    DECLARE v_image_type ENUM(
+               'users_profile',
+               'artists_banner',
+               'musics_cover',
+               'albums_cover',
+               'podcasts_cover',
+               'playlists_cover'
+       );
     DECLARE v_image_url VARCHAR(1024);
     DECLARE v_cover_image BIGINT DEFAULT NULL;
 
@@ -128,6 +139,7 @@ BEGIN
         -- get inserted cover image id
         SET v_cover_image = LAST_INSERT_ID();
     END IF;
+
     -- insert music
     INSERT INTO musics (title, release_date, url, cover_image, album_id)
     VALUES (v_title, v_release_date, v_url, v_cover_image, v_album_id);
@@ -150,15 +162,22 @@ BEGIN
     END WHILE;
 
     COMMIT;
-END;
+END $$
 
 -- create album with musics and optional cover image
 CREATE PROCEDURE create_album_with_musics(IN album_json JSON)
 BEGIN
     DECLARE v_album_id INT;
 
-    --- cover image (optional)
-    DECLARE v_image_type VARCHAR(64);
+    -- cover image (optional)
+    DECLARE v_image_type ENUM(
+               'users_profile',
+               'artists_banner',
+               'musics_cover',
+               'albums_cover',
+               'podcasts_cover',
+               'playlists_cover'
+       );
     DECLARE v_image_url VARCHAR(1024);
     DECLARE v_album_cover BIGINT DEFAULT NULL;
 
@@ -233,7 +252,7 @@ BEGIN
     END WHILE;
 
     COMMIT;
-END;
+END $$
 
 -- create podcast with optional cover image
 CREATE PROCEDURE create_podcast(IN podcast_json JSON)
@@ -242,9 +261,17 @@ BEGIN
     DECLARE v_description VARCHAR(2048);
     DECLARE v_release_date DATE;
     DECLARE v_artist_id INT UNSIGNED;
+    DECLARE v_url VARCHAR(1024);
 
     -- cover image (optional)
-    DECLARE v_image_type VARCHAR(64);
+    DECLARE v_image_type ENUM(
+               'users_profile',
+               'artists_banner',
+               'musics_cover',
+               'albums_cover',
+               'podcasts_cover',
+               'playlists_cover'
+       );
     DECLARE v_image_url VARCHAR(1024);
     DECLARE v_cover_image BIGINT DEFAULT NULL;
 
@@ -253,6 +280,7 @@ BEGIN
     SET v_description  = JSON_UNQUOTE(JSON_EXTRACT(podcast_json, '$.description'));
     SET v_release_date = JSON_UNQUOTE(JSON_EXTRACT(podcast_json, '$.release_date'));
     SET v_artist_id    = JSON_EXTRACT(podcast_json, '$.artist_id');
+    SET v_url          = JSON_UNQUOTE(JSON_EXTRACT(podcast_json, '$.url'));
     SET v_image_type   = JSON_UNQUOTE(JSON_EXTRACT(podcast_json, '$.cover_image.type'));
     SET v_image_url    = JSON_UNQUOTE(JSON_EXTRACT(podcast_json, '$.cover_image.url'));
 
@@ -267,8 +295,10 @@ BEGIN
     END IF;
 
     -- insert podcast
-    INSERT INTO podcasts (title, description, release_date, cover_image_auto, artist_id)
-    VALUES (v_title, v_description, v_release_date, v_cover_image, v_artist_id);
+    INSERT INTO podcasts (title, description, release_date, url, cover_image, artist_id)
+    VALUES (v_title, v_description, v_release_date, v_url, v_cover_image, v_artist_id);
 
     COMMIT;
-END;
+END $$
+
+DELIMITER ;

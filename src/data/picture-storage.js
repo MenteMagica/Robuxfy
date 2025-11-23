@@ -56,7 +56,7 @@ async function storeUserPictureUrl(
     const imageId = imageResult.insertId;
 
     const [userResult] = await connection.execute(
-      'UPDATE users SET picture_url = ? WHERE id = ?',
+      'UPDATE users SET profile_picture = ? WHERE id = ?',
       [imageId, userId]
     );
 

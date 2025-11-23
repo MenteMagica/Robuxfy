@@ -37,7 +37,7 @@ All endpoints are prefixed with `/api`.
 | POST   | `/api/users`     | Create a new user (requires `email`, `username`, `displayName`) |
 | PUT    | `/api/users/:id` | Replace a user (requires `email`, `username`, `displayName`) |
 | PATCH  | `/api/users/:id` | Partially update a user                                     |
-| POST   | `/api/users/:id/picture` | Accepts a `pictureUrl` and stores it in the relational `images` table, updating the user's `picture_url` foreign key |
+| POST   | `/api/users/:id/picture` | Accepts a `pictureUrl` and stores it in the relational `images` table, updating the user's `profile_picture` foreign key |
 | DELETE | `/api/users/:id` | Remove a user                                               |
 
 Users must have a unique `email` and `username`. Email addresses are validated and stored in lowercase.
@@ -70,6 +70,9 @@ Saving profile or cover images requires a MySQL database that contains the `user
 
 If these variables are not present, regular CRUD endpoints keep working, but the `/api/users/:id/picture` route returns a 500 error explaining which variables are missing.
 
+The repository ships with a single set of database scripts in `DB/sql` that create the `db_robuxfy` schema, tables, foreign keys,
+indexes, and stored procedures expected by the API helpers. Run the scripts in numerical order to provision a fresh database.
+
 ### Picture upload helper
 
 Endpoint: `POST /api/users/:id/picture`
@@ -87,7 +90,7 @@ Behaviour:
 
 1. Validates the `pictureUrl` length (max `2047` characters) and type (`profile` or `cover`).
 2. Inserts the URL into the `images` table.
-3. Updates the `users.picture_url` column with the inserted image id – honoring the foreign-key constraint you provided.
+3. Updates the `users.profile_picture` column with the inserted image id – honoring the foreign-key constraint you provided.
 4. Returns the image metadata along with the updated in-memory user.
 
 ### Filtering examples

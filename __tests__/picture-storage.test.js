@@ -61,7 +61,7 @@ describe('storeUserPictureUrl', () => {
       ['users_profile', 'https://example.com/avatar.png'],
     ]);
     assert.deepEqual(execute.mock.calls[1].arguments, [
-      'UPDATE users SET picture_url = ? WHERE id = ?',
+      'UPDATE users SET profile_picture = ? WHERE id = ?',
       [42, 'abc-123'],
     ]);
     assert.ok(connection.commit.mock.calls.length > 0);

@@ -31,3 +31,5 @@ ON playlists (name);
 -- metadata for artist's musics
 CREATE INDEX idx_user_music_music_id
 ON user_music (music_id);
+USE db_robuxfy;
+

@@ -59,11 +59,12 @@ CREATE TABLE IF NOT EXISTS albums (
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS podcasts (
-	id BIGINT UNSIGNED AUTO_INCREMENT,
-	title VARCHAR(256) NOT NULL,
-	description VARCHAR(2048),
-	release_date DATE NOT NULL,
-	url VARCHAR(1024) NOT NULL,
+        id BIGINT UNSIGNED AUTO_INCREMENT,
+        title VARCHAR(256) NOT NULL,
+        description VARCHAR(2048),
+        release_date DATE NOT NULL,
+        url VARCHAR(1024),
+        cover_image BIGINT UNSIGNED,
 	
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
