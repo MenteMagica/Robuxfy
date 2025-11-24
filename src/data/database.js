@@ -44,8 +44,25 @@ function getDbPool(env = process.env) {
   return poolPromise;
 }
 
+async function getDbConnection(env = process.env) {
+  const pool = await getDbPool(env);
+  return pool.getConnection();
+}
+
+async function pingDatabase(env = process.env) {
+  const pool = await getDbPool(env);
+  const [rows] = await pool.query('SELECT 1 AS result');
+  return rows?.[0]?.result === 1;
+}
+
 function __resetDbPool() {
   poolPromise = null;
 }
 
-export { getDbPool, getMissingDbEnvVars, __resetDbPool };
+export {
+  __resetDbPool,
+  getDbConnection,
+  getDbPool,
+  getMissingDbEnvVars,
+  pingDatabase,
+};

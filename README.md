@@ -55,7 +55,7 @@ Users must have a unique `email` and `username`. Email addresses are validated a
 
 The POST endpoint requires a unique `stageName`. Optional `genre` and `description` values can also be supplied.
 
-### Database configuration for picture storage
+### Database configuration for picture storage (with or without Express)
 
 Saving profile or cover images requires a MySQL database that contains the `users` and `images` tables described in the project brief. Configure the connection through the following environment variables before starting the API:
 
@@ -69,6 +69,14 @@ Saving profile or cover images requires a MySQL database that contains the `user
 | `DB_CONNECTION_LIMIT` | Optional pool size (defaults to `10`) |
 
 If these variables are not present, regular CRUD endpoints keep working, but the `/api/users/:id/picture` route returns a 500 error explaining which variables are missing.
+
+You can work with the database helpers without running the Express server. For a quick connectivity check, run:
+
+```bash
+npm run db:ping
+```
+
+The script performs a `SELECT 1` using the same pooling logic as the API and reports whether the connection succeeded. You can also import `getDbConnection` or `pingDatabase` from `src/data/database.js` inside your own scripts when you only need database access.
 
 The repository ships with a single set of database scripts in `DB/sql` that create the `db_robuxfy` schema, tables, foreign keys,
 indexes, and stored procedures expected by the API helpers. Run the scripts in numerical order to provision a fresh database.
