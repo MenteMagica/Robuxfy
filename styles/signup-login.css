@@ -1,0 +1,457 @@
+body {
+    font-family: var(--font-main);
+    background-image: url(../assets/images/Background.png);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Impede o background de rolar com o conteúdo */
+
+    /* Centralização principal */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* --- 2. Tipografia e Elementos Gerais --- */
+
+h1 {
+    font-size: 25px;
+    color: var(--primary-color);
+    margin-bottom: 20px; /* Margem controlada */
+    font-weight: 600;
+}
+
+p {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    margin: 20px 0;
+    color: var(--text-light);
+}
+
+a {
+    color: var(--text-light);
+    font-size: 13px;
+    text-decoration: none;
+    margin: 15px 0 10px;
+    transition: color var(--micro-transition-speed);
+}
+
+a:hover {
+    color: var(--primary-hover-color);
+}
+
+button {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    font-size: 12px;
+    padding: 10px 45px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 10px;
+    cursor: pointer;
+
+    /* Animação fluida adicionada */
+    transition: transform var(--micro-transition-speed),
+        background-color var(--micro-transition-speed),
+        box-shadow var(--micro-transition-speed);
+}
+
+button:hover {
+    transform: scale(1.02); /* Leve zoom */
+    box-shadow: 0 4px 15px rgba(51, 153, 255, 0.3);
+}
+
+button:active {
+    transform: scale(0.98); /* Efeito de clique */
+}
+
+.robuxfy-logo {
+    height: 50px;
+    vertical-align: middle;
+}
+
+/* Botão do overlay */
+button.hidden {
+    background: rgba(0, 0, 0, 0.164);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    border: 1px solid rgba(255, 255, 255, 0.342);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+button.hidden:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Estilo para botão desabilitado */
+button:disabled {
+    background-color: var(--disabled-bg);
+    border-color: var(--disabled-bg);
+    color: var(--text-disabled);
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: scale(1); /* Reseta hover */
+    box-shadow: none;
+}
+
+/* --- 3. Layout Principal --- */
+
+.container {
+    background-color: var(--dark-bg-primary);
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+    position: relative;
+    overflow: hidden; /* Essencial para a animação */
+    width: 768px;
+    max-width: 100%;
+    min-height: 480px;
+}
+
+/* --- 4. Formulários e Inputs --- */
+
+.form-container {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all var(--transition-speed) var(--transition-easing);
+}
+
+.form-container form {
+    background-color: var(--dark-bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 40px;
+    height: 100%;
+}
+
+.container input {
+    color: var(--text-light);
+    background-color: var(--dark-bg-secondary);
+    border: 1px solid transparent; /* Adicionado para a animação de foco */
+    margin: 5px 0;
+    padding: 10px 15px;
+    font-size: 13px;
+    border-radius: 8px;
+    width: 100%;
+    height: 45px;
+    outline: none;
+
+    /* Animação fluida adicionada */
+    transition: border-color var(--micro-transition-speed),
+        box-shadow var(--micro-transition-speed);
+}
+
+.container input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(51, 153, 255, 0.2);
+}
+
+/* Container do "Olho" de senha */
+.password-container {
+    position: relative;
+    width: 100%;
+}
+
+.toggle-password-icon {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--text-dark);
+    font-size: 16px;
+    user-select: none;
+    transition: color var(--micro-transition-speed);
+}
+
+.toggle-password-icon:hover {
+    color: var(--text-light);
+}
+
+/* Checkbox customizado */
+.remember-me {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    margin: 10px 0 10px;
+    font-size: 13px;
+    color: var(--text-light);
+}
+
+.remember-me input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+}
+
+.remember-me label {
+    position: relative;
+    padding-left: 28px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.remember-me label::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    background-color: var(--dark-bg-secondary);
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    transition: background-color var(--micro-transition-speed);
+}
+
+.remember-me label::after {
+    content: "✔";
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%) scale(0);
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--dark-bg-secondary);
+    transition: transform var(--micro-transition-speed) var(--transition-easing);
+}
+
+.remember-me input[type="checkbox"]:checked + label::before {
+    background-color: var(--primary-color);
+}
+
+.remember-me input[type="checkbox"]:checked + label::after {
+    transform: translateY(-50%) scale(1);
+}
+
+.remember-me label a {
+    color: var(--primary-color);
+    text-decoration: underline;
+    font-weight: 600;
+    margin: 0;
+    font-size: inherit;
+}
+
+.remember-me label a:hover {
+    color: var(--primary-hover-color);
+}
+
+/* Links de toggle para mobile (escondidos no desktop) */
+.mobile-toggle {
+    display: none;
+    font-size: 14px;
+    margin-top: 20px;
+}
+.mobile-toggle a {
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: underline;
+}
+
+/* --- 5. Animação Desktop (Side-by-Side) --- */
+
+.sign-in {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+}
+
+.container.active .sign-in {
+    transform: translateX(100%);
+    opacity: 0; /* Adicionado para sumir suavemente */
+}
+
+.sign-up {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+}
+
+.container.active .sign-up {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+    animation: move var(--transition-speed);
+}
+
+@keyframes move {
+    0%,
+    49.99% {
+        opacity: 0;
+        z-index: 1;
+    }
+    50%,
+    100% {
+        opacity: 1;
+        z-index: 5;
+    }
+}
+
+/* Overlay (Painel que se move) */
+.toggle-container {
+    border-radius: 20px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: all var(--transition-speed) var(--transition-easing);
+    z-index: 1000;
+}
+
+.container.active .toggle-container {
+    transform: translateX(-100%);
+}
+
+.toggle {
+    background: url("../assets/images/ArianaGrande.jpg") center/cover no-repeat;
+    position: relative;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    color: var(--text-light);
+    transform: translateX(0);
+    transition: all var(--transition-speed) var(--transition-easing);
+}
+
+/* Filtro escuro sobre a imagem do overlay */
+.toggle::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 1;
+}
+
+.container.active .toggle {
+    transform: translateX(50%);
+}
+
+.toggle-panel {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 30px;
+    text-align: center;
+    top: 0; /* Alterado de 60px para 0 */
+    text-shadow: 2px 2px 4px rgb(0, 0, 0);
+    transform: translateX(0);
+    transition: all var(--transition-speed) var(--transition-easing);
+    z-index: 2;
+}
+
+.toggle-left {
+    transform: translateX(-200%);
+}
+
+.container.active .toggle-left {
+    transform: translateX(0);
+}
+
+.toggle-right {
+    right: 0;
+    transform: translateX(0);
+}
+
+.container.active .toggle-right {
+    transform: translateX(200%);
+}
+
+/* --- 6. Responsividade (Mobile-First) --- */
+
+@media (max-width: 768px) {
+    body {
+        height: auto; /* Permite rolar a página */
+        padding: 20px 0; /* Espaçamento para não colar nas bordas */
+    }
+
+    .container {
+        width: 90vw; /* Ocupa 90% da largura da tela */
+        max-width: 450px; /* Limite máximo */
+        min-height: 0; /* Altura automática */
+        border-radius: 20px;
+    }
+
+    /* 1. Esconde o overlay lateral */
+    .toggle-container {
+        display: none;
+    }
+
+    /* 2. Mostra os links de toggle mobile */
+    .mobile-toggle {
+        display: block;
+    }
+
+    /* 3. Ajusta os painéis de formulário */
+    .form-container {
+        width: 100%;
+        position: relative; /* Remove o 'absolute' */
+        height: auto; /* Altura automática */
+        padding: 40px 20px; /* Mais padding */
+        transition: opacity var(--transition-speed) var(--transition-easing),
+            transform var(--transition-speed) var(--transition-easing);
+    }
+
+    .form-container form {
+        padding: 0 20px;
+    }
+
+    h1 {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    /* 4. Define a animação de "stack" (empilhar) */
+
+    .sign-in {
+        /* O sign-in é o estado padrão, visível */
+        opacity: 1;
+        z-index: 2;
+        transform: translateY(0);
+    }
+
+    .sign-up {
+        /* O sign-up começa invisível e absoluto, por trás */
+        opacity: 0;
+        z-index: 1;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: translateY(20px); /* Começa um pouco abaixo */
+    }
+
+    .container.active .sign-in {
+        /* O sign-in some */
+        transform: translateY(20px);
+        opacity: 0;
+        z-index: 1;
+    }
+
+    .container.active .sign-up {
+        /* O sign-up aparece */
+        transform: translateY(0);
+        opacity: 1;
+        z-index: 2;
+        position: relative; /* Volta a fazer parte do fluxo */
+    }
+
+    /* O @keyframes move não é mais necessário em mobile */
+    .container.active .sign-up {
+        animation: none;
+    }
+}

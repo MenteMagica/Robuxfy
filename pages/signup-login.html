@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="../assets/images/Robuxfy_Logo.png" />
+
+    <link rel="stylesheet" href="../styles/general.css" />
+    <link rel="stylesheet" href="../styles/signup-login.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+    <title>Robuxfy - Login</title>
+  </head>
+
+  <body>
+    <div class="container" id="container">
+      <div class="form-container sign-up">
+        <form>
+          <h1>Create Account</h1>
+          <input type="text" placeholder="Nickname" />
+          <input type="email" placeholder="E-mail" />
+
+          <div class="password-container">
+            <input type="password" placeholder="Password" id="signUpPassword" />
+            <i
+              class="fa-solid fa-eye toggle-password-icon"
+              id="toggleSignUpPassword"
+            ></i>
+          </div>
+
+          <div class="remember-me">
+            <input type="checkbox" id="termsAgreement" />
+            <label for="termsAgreement"
+              >I have read and agree to the
+              <a
+                href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                target="_blank"
+                >Terms of Use</a
+              ></label
+            >
+          </div>
+
+          <button id="signUpButton">Sign Up</button>
+        </form>
+      </div>
+
+      <div class="form-container sign-in">
+        <form>
+          <h1>
+            <img
+              class="robuxfy-logo"
+              src="../assets/images/Robuxfy_Logo.png"
+              alt="Robuxfy Logo"
+            />
+            Sign in Robuxfy
+          </h1>
+          <input type="email" placeholder="E-mail" />
+
+          <div class="password-container">
+            <input type="password" placeholder="Password" id="signInPassword" />
+            <i
+              class="fa-solid fa-eye toggle-password-icon"
+              id="togglePassword"
+            ></i>
+          </div>
+
+          <div class="remember-me">
+            <input type="checkbox" id="rememberMe" />
+            <label for="rememberMe">Remember me</label>
+          </div>
+
+          <a href="../pages/info.html" target="">Forgot your password?</a>
+          <button>Sign In</button>
+        </form>
+      </div>
+
+      <div class="toggle-container">
+        <div class="toggle">
+          <div class="toggle-panel toggle-left">
+            <p>Enter your personal details</p>
+            <button class="hidden" href="../pages/info.html" id="login">
+              Sign In
+            </button>
+          </div>
+
+          <div class="toggle-panel toggle-right">
+            <p>Register with your personal details</p>
+            <button class="hidden" id="register">Sign Up</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../scripts/script.js"></script>
+  </body>
+</html>
