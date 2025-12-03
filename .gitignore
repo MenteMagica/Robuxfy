@@ -6,3 +6,5 @@ node_modules/
 
 # MinIO local storage
 .minio*
+
+.DS_Store
