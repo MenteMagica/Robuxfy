@@ -8,7 +8,7 @@ module.exports = (db, authMiddleware, isArtist) => {
 
     // insert a new banner image and remove old file
     router.put(
-        "/banner",
+        "/",
         authMiddleware,
         isArtist,
         upload.single("banner"),

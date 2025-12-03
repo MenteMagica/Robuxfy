@@ -4,7 +4,7 @@ module.exports = (db, authenticateToken) => {
     const router = express.Router();
 
     // follows an artist
-    router.post("/artists/:id/follow", authenticateToken, async (req, res) => {
+    router.post("/", authenticateToken, async (req, res) => {
         const artistId = req.params.id;
         const userId = req.user.id;
 

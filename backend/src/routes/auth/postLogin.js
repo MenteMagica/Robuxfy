@@ -3,7 +3,7 @@ module.exports = (db, bcrypt, jwt, JWT_SECRET) => {
     const router = express.Router();
 
     // logs-in the user
-    router.post("/login", async (req, res) => {
+    router.post("/", async (req, res) => {
         const { email, password } = req.body;
 
         try {

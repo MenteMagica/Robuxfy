@@ -4,7 +4,7 @@ module.exports = (db) => {
     const router = express.Router();
 
     // searches for music by name
-    router.get("/search/musics", async (req, res) => {
+    router.get("/", async (req, res) => {
         const searchTerm = req.query.q;
 
         if (!searchTerm || searchTerm.trim() === "") {

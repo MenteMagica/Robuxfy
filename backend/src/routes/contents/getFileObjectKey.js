@@ -5,7 +5,7 @@ const { MINIO_BUCKET } = require("../../services/minio/mediaController");
 const { authMiddleware } = require("../../middlewares/authToken");
 
 // get a file
-router.get("/file/:objectKey", authMiddleware, async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
     try {
         const objectKey = decodeURIComponent(req.params.objectKey);
 

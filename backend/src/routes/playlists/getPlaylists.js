@@ -4,7 +4,7 @@ module.exports = (db, authenticateToken) => {
     const router = express.Router();
 
     // view playlist content
-    router.get("/playlists/:id", authenticateToken, async (req, res) => {
+    router.get("/", authenticateToken, async (req, res) => {
         const playlistId = req.params.id;
         const userId = req.user.id;
 

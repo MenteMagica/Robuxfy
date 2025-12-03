@@ -9,7 +9,7 @@ module.exports = (authMiddleware, isArtist) => {
 
     // upload archives
     router.post(
-        "/upload",
+        "/",
         authMiddleware,
         isArtist,
         upload.array("files"),

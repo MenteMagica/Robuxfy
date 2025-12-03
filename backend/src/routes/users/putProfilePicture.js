@@ -8,7 +8,7 @@ module.exports = (db, authMiddleware) => {
 
     // insert a new user profile picture and remove old file
     router.put(
-        "/profile-picture",
+        "/",
         authMiddleware,
         upload.single("profile_picture"),
         async (req, res) => {

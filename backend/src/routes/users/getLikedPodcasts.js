@@ -4,7 +4,7 @@ module.exports = (db, authMiddleware) => {
     const router = express.Router();
 
     // list podcasts liked by the user
-    router.get("/me/podcasts/likes", authMiddleware, async (req, res) => {
+    router.get("/", authMiddleware, async (req, res) => {
         const userId = req.user.id;
 
         try {

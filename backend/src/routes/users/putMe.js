@@ -4,7 +4,7 @@ module.exports = (db, authMiddleware) => {
     const router = express.Router();
 
     // update logged-in user profile data
-    router.put("/me", authMiddleware, async (req, res) => {
+    router.put("/", authMiddleware, async (req, res) => {
         const userId = req.user.id;
         const { username, email, password } = req.body;
 

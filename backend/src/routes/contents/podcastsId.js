@@ -4,7 +4,7 @@ module.exports = (db) => {
     const router = express.Router();
 
     // fetches details of a single podcast
-    router.get("/podcasts/:id", async (req, res) => {
+    router.get("/", async (req, res) => {
         const podcastId = req.params.id;
 
         try {

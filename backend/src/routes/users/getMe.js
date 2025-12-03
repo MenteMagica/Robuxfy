@@ -4,7 +4,7 @@ module.exports = (db, authMiddleware) => {
     const router = express.Router();
 
     // fetch logged-in user profile data
-    router.get("/me", authMiddleware, async (req, res) => {
+    router.get("/", authMiddleware, async (req, res) => {
         const userId = req.user.id;
 
         try {

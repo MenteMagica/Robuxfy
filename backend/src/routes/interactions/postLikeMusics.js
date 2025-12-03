@@ -4,7 +4,7 @@ module.exports = (db, authenticateToken) => {
     const router = express.Router();
 
     // sets is_like to true (like music)
-    router.post("/musics/:id/like", authenticateToken, async (req, res) => {
+    router.post("/", authenticateToken, async (req, res) => {
         const musicId = req.params.id;
         const userId = req.user.id;
 

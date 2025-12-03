@@ -4,7 +4,7 @@ module.exports = (db, authenticateToken) => {
     const router = express.Router();
 
     // sets is_like to true (like podcast)
-    router.post("/podcasts/:id/like", authenticateToken, async (req, res) => {
+    router.post("/", authenticateToken, async (req, res) => {
         const podcastId = req.params.id;
         const userId = req.user.id;
 

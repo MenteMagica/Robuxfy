@@ -3,7 +3,7 @@ const express = require("express");
 module.exports = (db, authMiddleware, isArtist) => {
     const router = express.Router();
     // create an artist profile
-    router.post("/register", authMiddleware, async (req, res) => {
+    router.post("/", authMiddleware, async (req, res) => {
         const userId = req.user.id;
         const { name, biography, banner } = req.body;
 

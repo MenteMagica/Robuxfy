@@ -8,7 +8,7 @@ module.exports = (db, authMiddleware, isArtist) => {
     const { insertAlbum } = require("../../services/artists/insertAlbum");
 
     // creates a new content (music, podcast or album)
-    router.post("/content", authMiddleware, isArtist, async (req, res) => {
+    router.post("/", authMiddleware, isArtist, async (req, res) => {
         const artistId = req.artistId;
         const { content_type, title, release_date, uploads } = req.body;
 

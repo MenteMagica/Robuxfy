@@ -4,7 +4,7 @@ module.exports = (db, bcrypt) => {
     const salt_rounds = 10;
 
     // register a new user
-    router.post("/register", async (req, res) => {
+    router.post("/", async (req, res) => {
         const { username, date_of_birth, email, password } = req.body;
 
         if (!username || !email || !password || !date_of_birth) {

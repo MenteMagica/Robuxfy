@@ -4,7 +4,7 @@ module.exports = (db, authenticateToken) => {
     const router = express.Router();
 
     // sets is_like to false (deslike podcast)
-    router.delete("/podcasts/:id/like", authenticateToken, async (req, res) => {
+    router.delete("/", authenticateToken, async (req, res) => {
         const podcastId = req.params.id;
         const userId = req.user.id;
 

@@ -4,7 +4,7 @@ module.exports = (db) => {
     const router = express.Router();
 
     // fetches album details, its tracks, and consolidated genres
-    router.get("/albums/:id", async (req, res) => {
+    router.get("/", async (req, res) => {
         const albumId = req.params.id;
 
         try {

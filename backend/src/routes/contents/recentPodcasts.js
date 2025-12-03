@@ -4,7 +4,7 @@ module.exports = (db) => {
     const router = express.Router();
 
     // lists the most recent released podcasts
-    router.get("/recent/podcasts", async (res) => {
+    router.get("/", async (res) => {
         try {
             const [podcasts] = await db.query(
                 `

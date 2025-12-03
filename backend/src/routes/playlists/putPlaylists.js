@@ -4,7 +4,7 @@ module.exports = (db, authenticateToken) => {
     const router = express.Router();
 
     // update playlist metadata (owner only)
-    router.put("/playlists/:id", authenticateToken, async (req, res) => {
+    router.put("/", authenticateToken, async (req, res) => {
         const playlistId = req.params.id;
         const userId = req.user.id;
         const { name, cover_image_custom, is_public } = req.body;

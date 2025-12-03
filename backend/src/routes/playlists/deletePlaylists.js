@@ -4,7 +4,7 @@ module.exports = (db, authenticateToken) => {
     const router = express.Router();
 
     // delete playlist (owner only)
-    router.delete("/playlists/:id", authenticateToken, async (req, res) => {
+    router.delete("/", authenticateToken, async (req, res) => {
         const playlistId = req.params.id;
         const userId = req.user.id;
 

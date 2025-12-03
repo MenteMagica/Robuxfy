@@ -4,7 +4,7 @@ module.exports = (db) => {
     const router = express.Router();
 
     // fetches details of a single music track
-    router.get("/musics/:id", async (req, res) => {
+    router.get("/", async (req, res) => {
         const musicId = req.params.id;
 
         try {

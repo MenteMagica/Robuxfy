@@ -4,7 +4,7 @@ module.exports = (db, authenticateToken) => {
     const router = express.Router();
 
     //  create a new playlist
-    router.post("/playlists", authenticateToken, async (req, res) => {
+    router.post("/", authenticateToken, async (req, res) => {
         const userId = req.user.id;
         const { name, cover_image_custom, is_public } = req.body;
 

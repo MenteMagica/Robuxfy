@@ -4,7 +4,7 @@ module.exports = (db, authMiddleware) => {
     const router = express.Router();
 
     // list friends of the logged-in user
-    router.get("/me/friends", authMiddleware, async (req, res) => {
+    router.get("/", authMiddleware, async (req, res) => {
         const UserId = req.user.id;
 
         try {

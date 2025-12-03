@@ -3,7 +3,7 @@ const express = require("express");
 module.exports = (db, authMiddleware, isArtist) => {
     const router = express.Router();
     // get the artist's podcasts sorted in descending order by release date.
-    router.get("/me/podcasts", authMiddleware, isArtist, async (req, res) => {
+    router.get("/", authMiddleware, isArtist, async (req, res) => {
         const artistId = req.artistId; // get user/artist id
         try {
             const [podcasts] = await db.query(
