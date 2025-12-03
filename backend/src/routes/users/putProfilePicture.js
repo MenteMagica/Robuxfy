@@ -4,7 +4,7 @@ module.exports = (db, authMiddleware) => {
     const router = express.Router();
     const multer = require("multer");
     const upload = multer({ storage: multer.memoryStorage() });
-    const handleImageUpdate = require("../../utils/handleImageUpdate");
+    const { handleImageUpdate } = require("../../utils/handleImageUpdate");
 
     // insert a new user profile picture and remove old file
     router.put(

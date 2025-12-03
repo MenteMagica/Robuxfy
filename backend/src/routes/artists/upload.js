@@ -4,7 +4,7 @@ module.exports = (authMiddleware, isArtist) => {
     const router = express.Router();
     const multer = require("multer");
     const upload = multer({ storage: multer.memoryStorage() });
-    const validatePath = require("../../services/minio/mediaValidation");
+    const { validatePath } = require("../../services/minio/mediaValidation");
     const { uploadMedia } = require("../../services/minio/mediaController");
 
     // upload archives
