@@ -7,7 +7,7 @@ ON musics (title);
 
 -- search for albums by name
 CREATE INDEX idx_albums_name
-ON albums (name);
+ON albums (title);
 
 -- search for podcasts by title
 CREATE INDEX idx_podcasts_title
@@ -16,10 +16,6 @@ ON podcasts (title);
 -- search for artists by name
 CREATE INDEX idx_artists_name
 ON artists (name);
-
--- search for playlists by name
-CREATE INDEX idx_playlists_name
-ON playlists (name);
 
 -- ########## Utility ##########
 -- add users by username
