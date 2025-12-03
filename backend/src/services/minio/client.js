@@ -9,28 +9,28 @@ const config = {
     secretKey: process.env.MINIO_SECRET_KEY,
 };
 
-const minio_client = new minio.Client(config);
+const minioClient = new minio.Client(config);
 
-async function initialize_minio(bucket_name) {
+async function initializeMinio(bucketName) {
     try {
-        const exists = await minio_client.bucketExists(bucket_name);
+        const exists = await minioClient.bucketExists(bucketName);
 
         if (!exists) {
             throw new Error(
-                `Error: the required bucket "${bucket_name}" does not exist.`
+                `Error: the required bucket "${bucketName}" does not exist.`
             );
         } else {
             console.log(
-                `Minio: connection established, bucket "${bucket_name}" found.`
+                `MinIO: connection established, bucket "${bucketName}" found.`
             );
         }
     } catch (error) {
-        console.error("Minio error:", error.message);
+        console.error("MinIO error:", error.message);
         throw error;
     }
 }
 
 module.exports = {
-    minio_client,
-    initialize_minio,
+    minioClient,
+    initializeMinio,
 };
