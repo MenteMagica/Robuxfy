@@ -18,11 +18,11 @@ module.exports = (db) => {
     ];
 
     // dynamically import and mount each router
-    routes.map(({ file, prefix }) => {
+    routes.map(({ file }) => {
         // require the module and pass dependencies
         const routeRouter = require(`./${file}`)(db);
-        // mount the router on its URL prefix
-        router.use(`/${prefix}`, routeRouter);
+        // mount the router directly (each module declares its own paths)
+        router.use(routeRouter);
     });
 
     return router;

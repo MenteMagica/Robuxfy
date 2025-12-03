@@ -3,6 +3,14 @@
 const container = document.getElementById('container');
 const registerBtn = document.getElementById('register');
 const loginBtn = document.getElementById('login');
+const authFeedback = document.getElementById('authFeedback');
+const signUpForm = document.getElementById('signUpForm');
+const signInForm = document.getElementById('signInForm');
+const signUpNickname = document.getElementById('signUpNickname');
+const signUpEmail = document.getElementById('signUpEmail');
+const signUpBirthdate = document.getElementById('signUpBirthdate');
+const signInEmail = document.getElementById('signInEmail');
+const rememberMeCheckbox = document.getElementById('rememberMe');
 
 // Adiciona a classe 'active' quando o botão 'Sign Up' (registrar) é clicado
 if (registerBtn) {
@@ -76,6 +84,70 @@ function setupPasswordToggle(toggleId, passwordId) {
 // Chamamos a função para ambos os formulários:
 setupPasswordToggle('togglePassword', 'signInPassword');
 setupPasswordToggle('toggleSignUpPassword', 'signUpPassword');
+
+function setAuthFeedback(message, variant = 'info') {
+    if (!authFeedback) return;
+    authFeedback.textContent = message;
+    authFeedback.dataset.variant = variant;
+}
+
+async function handleSignUp(event) {
+    event.preventDefault();
+    if (!window.apiClient) return;
+
+    const passwordInput = document.getElementById('signUpPassword');
+
+    try {
+        setAuthFeedback('Creating your account...', 'info');
+        await window.apiClient.registerUser({
+            username: signUpNickname.value.trim(),
+            email: signUpEmail.value.trim(),
+            password: passwordInput.value,
+            dateOfBirth: signUpBirthdate.value,
+        });
+
+        setAuthFeedback('Account created! You can sign in now.', 'success');
+        container.classList.remove('active');
+        passwordInput.value = '';
+    } catch (error) {
+        setAuthFeedback(`Sign up failed: ${error.message}`, 'error');
+        console.error('Sign up failed', error);
+    }
+}
+
+async function handleSignIn(event) {
+    event.preventDefault();
+    if (!window.apiClient) return;
+
+    const passwordInput = document.getElementById('signInPassword');
+
+    try {
+        setAuthFeedback('Signing you in...', 'info');
+        const result = await window.apiClient.loginUser({
+            email: signInEmail.value.trim(),
+            password: passwordInput.value,
+        });
+
+        if (result?.token) {
+            const storage = rememberMeCheckbox?.checked ? localStorage : sessionStorage;
+            storage.setItem('robuxfyToken', result.token);
+        }
+
+        setAuthFeedback('Login successful! Redirecting to home...', 'success');
+        window.location.href = './home.html';
+    } catch (error) {
+        setAuthFeedback(`Login failed: ${error.message}`, 'error');
+        console.error('Login failed', error);
+    }
+}
+
+if (signUpForm) {
+    signUpForm.addEventListener('submit', handleSignUp);
+}
+
+if (signInForm) {
+    signInForm.addEventListener('submit', handleSignIn);
+}
 
 
 // --- 4. CÓDIGO PARA VALIDAR O CHECKBOX DE TERMOS ---

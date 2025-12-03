@@ -3,59 +3,138 @@ function setupScroll(containerId, leftBtnId, rightBtnId) {
   const leftBtn = document.getElementById(leftBtnId);
   const rightBtn = document.getElementById(rightBtnId);
 
-  // Rola 200px (aprox 1 card + gap)
   const scrollAmount = 200;
 
   if (leftBtn && rightBtn && container) {
-    leftBtn.addEventListener("click", () => {
+    leftBtn.addEventListener('click', () => {
       container.scrollLeft -= scrollAmount;
     });
-    rightBtn.addEventListener("click", () => {
+    rightBtn.addEventListener('click', () => {
       container.scrollLeft += scrollAmount;
     });
   }
 }
 
-setupScroll("discover-grid", "btn-descubra-left", "btn-descubra-right");
-setupScroll("genres-grid", "btn-genres-left", "btn-genres-right");
-setupScroll("foryou-grid", "btn-foryou-left", "btn-foryou-right");
-setupScroll("recent-grid", "btn-recent-left", "btn-recent-right");
+setupScroll('discover-grid', 'btn-descubra-left', 'btn-descubra-right');
+setupScroll('genres-grid', 'btn-genres-left', 'btn-genres-right');
+setupScroll('foryou-grid', 'btn-foryou-left', 'btn-foryou-right');
+setupScroll('recent-grid', 'btn-recent-left', 'btn-recent-right');
 
-// 1. Selecionamos os elementos do HTML pelo ID
 const playBtn = document.getElementById('playPauseBtn');
 const playIcon = document.getElementById('playIcon');
+const progressBar = document.getElementById('progressBar');
+const timeTexts = document.querySelectorAll('.progress-section .time-text');
+const currentTime = timeTexts?.[0];
 
-// 2. Criamos uma variável para saber o estado atual (começa pausado)
 let isPlaying = false;
 
-// 3. Adicionamos o evento de clique
-playBtn.addEventListener('click', () => {
+if (playBtn && playIcon) {
+  playBtn.addEventListener('click', () => {
     if (isPlaying) {
-        // Se já está tocando e clicou: PAUSA A MÚSICA
-        playIcon.src = "../assets/icons/Play.png"; // Volta o ícone de Play
-        isPlaying = false; // Atualiza o estado
-        
-        // Aqui você colocaria: audio.pause();
-        
+      playIcon.src = '../assets/icons/Play.png';
+      isPlaying = false;
     } else {
-        // Se está pausado e clicou: TOCA A MÚSICA
-        playIcon.src = "../assets/icons/Pause.png"; // Troca para o ícone de Pause
-        isPlaying = true; // Atualiza o estado
-        
-        // Aqui você colocaria: audio.play();
+      playIcon.src = '../assets/icons/Pause.png';
+      isPlaying = true;
     }
-});
-
-// 2. Atualizar tempo ao arrastar a barra
-if (progressBar) {
-  progressBar.addEventListener("input", function () {
-    // Simples cálculo para mostrar que funciona (valor 0 a 100)
-    // Transforma o valor da barra em "minutos:segundos" fictícios
-    let val = this.value;
-    let minutes = Math.floor(val / 60);
-    let seconds = val % 60;
-    if (seconds < 10) seconds = "0" + seconds;
-    currentTime.innerText = minutes + ":" + seconds;
   });
 }
 
+if (progressBar && currentTime) {
+  progressBar.addEventListener('input', function () {
+    const val = Number(this.value);
+    const minutes = Math.floor(val / 60);
+    const seconds = val % 60;
+    currentTime.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  });
+}
+
+const discoverGrid = document.getElementById('discover-grid');
+const searchInput = document.getElementById('searchInput');
+const homeStatus = document.getElementById('homeStatus');
+
+function setHomeStatus(message, variant = 'info') {
+  if (!homeStatus) return;
+  homeStatus.textContent = message;
+  homeStatus.dataset.variant = variant;
+}
+
+function createMusicCard(music) {
+  const card = document.createElement('div');
+  card.classList.add('card-square', 'dynamic-card');
+
+  const image = document.createElement('img');
+  image.classList.add('card-img');
+  image.alt = music?.title ?? 'Music cover';
+  image.src = music?.cover_image || '../assets/images/Robuxfy_Logo.png';
+
+  const caption = document.createElement('div');
+  caption.classList.add('card-caption');
+  caption.innerHTML = `<strong>${music?.title ?? 'Untitled'}</strong><span>${music?.artist_name ?? ''}</span>`;
+
+  card.appendChild(image);
+  card.appendChild(caption);
+
+  return card;
+}
+
+function renderDiscover(musics) {
+  if (!discoverGrid) return;
+  discoverGrid.innerHTML = '';
+
+  musics.forEach((music) => {
+    discoverGrid.appendChild(createMusicCard(music));
+  });
+}
+
+function debounce(fn, delay) {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn(...args), delay);
+  };
+}
+
+async function loadDiscover(query = '') {
+  if (!window.apiClient) {
+    setHomeStatus('API client not available.', 'error');
+    return;
+  }
+
+  try {
+    setHomeStatus(query ? `Searching for "${query}"...` : 'Loading recent tracks...', 'info');
+    const data = query
+      ? await window.apiClient.searchMusics(query)
+      : await window.apiClient.fetchRecentMusics();
+
+    const musics = data?.musics ?? [];
+
+    if (musics.length === 0) {
+      renderDiscover([]);
+      setHomeStatus('No content found for your search.', 'warning');
+      return;
+    }
+
+    renderDiscover(musics);
+    setHomeStatus(query ? `Showing results for "${query}"` : 'Showing the latest releases', 'success');
+  } catch (error) {
+    console.error('Failed to load music list', error);
+    setHomeStatus('Unable to load music from the server. Please try again.', 'error');
+  }
+}
+
+const handleSearchInput = debounce((value) => {
+  if (value.length < 2) {
+    loadDiscover();
+  } else {
+    loadDiscover(value);
+  }
+}, 350);
+
+if (searchInput) {
+  searchInput.addEventListener('input', (event) => {
+    handleSearchInput(event.target.value.trim());
+  });
+}
+
+loadDiscover();

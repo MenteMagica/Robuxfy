@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
   res.json({
     status: 'ok',
     message: 'Welcome to the Robuxfy API gateway',
-    backend: process.env.BACKEND_BASE_URL ?? 'http://localhost:3001',
+    backend: process.env.BACKEND_BASE_URL ?? 'http://localhost:3000',
     routes: {
       proxy: '/api/* -> BACKEND_BASE_URL/*',
       files: '/api/file/* -> BACKEND_BASE_URL/file/:objectKey (encoded)',

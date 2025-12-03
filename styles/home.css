@@ -263,6 +263,24 @@ body {
   display: none;
 }
 
+.home-status {
+  margin: 10px 0 20px;
+  color: #c7c7c7;
+  min-height: 20px;
+}
+
+.home-status[data-variant="error"] {
+  color: #ff6b6b;
+}
+
+.home-status[data-variant="success"] {
+  color: #4bd370;
+}
+
+.home-status[data-variant="warning"] {
+  color: #f7c948;
+}
+
 .card-square,
 .card-rect {
   min-width: 170px;
@@ -295,6 +313,30 @@ body {
 .card-img:hover {
     transform: scale(1.05);
     z-index: 1;
+}
+
+.dynamic-card .card-caption {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
+  color: #fff;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 2;
+}
+
+.dynamic-card .card-caption strong {
+  font-size: 16px;
+  font-weight: 700;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.dynamic-card .card-caption span {
+  font-size: 13px;
+  color: #e5e5e5;
 }
 .genre-title {
   position: absolute;

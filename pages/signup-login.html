@@ -18,13 +18,34 @@
   <body>
     <div class="container" id="container">
       <div class="form-container sign-up">
-        <form>
+        <form id="signUpForm">
           <h1>Create Account</h1>
-          <input type="text" placeholder="Nickname" />
-          <input type="email" placeholder="E-mail" />
+          <input
+            type="text"
+            placeholder="Nickname"
+            id="signUpNickname"
+            required
+          />
+          <input
+            type="email"
+            placeholder="E-mail"
+            id="signUpEmail"
+            required
+          />
+          <input
+            type="date"
+            placeholder="Date of birth"
+            id="signUpBirthdate"
+            required
+          />
 
           <div class="password-container">
-            <input type="password" placeholder="Password" id="signUpPassword" />
+            <input
+              type="password"
+              placeholder="Password"
+              id="signUpPassword"
+              required
+            />
             <i
               class="fa-solid fa-eye toggle-password-icon"
               id="toggleSignUpPassword"
@@ -43,12 +64,12 @@
             >
           </div>
 
-          <button id="signUpButton">Sign Up</button>
+          <button id="signUpButton" type="submit" disabled>Sign Up</button>
         </form>
       </div>
 
       <div class="form-container sign-in">
-        <form>
+        <form id="signInForm">
           <h1>
             <img
               class="robuxfy-logo"
@@ -57,10 +78,20 @@
             />
             Sign in Robuxfy
           </h1>
-          <input type="email" placeholder="E-mail" />
+          <input
+            type="email"
+            placeholder="E-mail"
+            id="signInEmail"
+            required
+          />
 
           <div class="password-container">
-            <input type="password" placeholder="Password" id="signInPassword" />
+            <input
+              type="password"
+              placeholder="Password"
+              id="signInPassword"
+              required
+            />
             <i
               class="fa-solid fa-eye toggle-password-icon"
               id="togglePassword"
@@ -73,7 +104,7 @@
           </div>
 
           <a href="../pages/info.html" target="">Forgot your password?</a>
-          <button>Sign In</button>
+          <button type="submit">Sign In</button>
         </form>
       </div>
 
@@ -94,6 +125,8 @@
       </div>
     </div>
 
+    <p id="authFeedback" class="auth-feedback" aria-live="polite"></p>
+    <script src="../scripts/api-client.js"></script>
     <script src="../scripts/script.js"></script>
   </body>
 </html>

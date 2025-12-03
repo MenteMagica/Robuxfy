@@ -38,7 +38,7 @@
       <div class="header-center">
         <div class="search-container">
           <img src="../assets/icons/Search.png" alt="Search" class="icon-img search-icon" />
-          <input type="text" placeholder="Search..." />
+          <input type="text" placeholder="Search..." id="searchInput" />
         </div>
       </div>
 
@@ -85,6 +85,7 @@
       </aside>
 
       <main class="content-area main-bordered">
+        <div class="home-status" id="homeStatus" aria-live="polite"></div>
         <section class="section-wrapper">
           <div class="section-header">
             <h2>Discover</h2>
@@ -432,7 +433,7 @@
         </div>
 
     </div>
-
+    <script src="../scripts/api-client.js"></script>
     <script src="../scripts/home.js"></script>
   </body>
 </html>

@@ -16,7 +16,7 @@ const dbPool = require("./src/database/databaseSQL");
 // load route modules with dependency injection
 const { auth, isArtist, logger } = require("./src/middlewares/index");
 const authMiddleware = auth(JWT_SECRET);
-const isArtistMiddleware = isArtist(db);
+const isArtistMiddleware = isArtist(dbPool);
 const loggerMiddleware = logger();
 
 app.use(express.json());

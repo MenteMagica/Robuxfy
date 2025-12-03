@@ -15,11 +15,11 @@ module.exports = (db, authMiddleware, isArtist) => {
     ];
 
     // dynamically import and mount each router
-    routes.map(({ file, prefix }) => {
+    routes.map(({ file }) => {
         // require the module and pass dependencies (db, authMiddleware, isArtist)
         const routeRouter = require(`./${file}`)(db, authMiddleware, isArtist);
-        // mount the router on its URL prefix
-        router.use(`/${prefix}`, routeRouter);
+        // mount the router directly (paths are declared inside each module)
+        router.use(routeRouter);
     });
 
     return router;

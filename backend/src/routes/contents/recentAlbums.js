@@ -4,7 +4,7 @@ module.exports = (db) => {
     const router = express.Router();
 
     // lists the most recent released albums
-    router.get("/recent/albums", async (res) => {
+    router.get("/recent/albums", async (req, res) => {
         try {
             const [albums] = await db.query(
                 `
