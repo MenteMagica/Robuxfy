@@ -1,4 +1,4 @@
-const updateImage = require("../../utils/updateImage");
+const updateImage = require("../utils/updateImage");
 
 // generalize image update process
 async function handleImageUpdate({

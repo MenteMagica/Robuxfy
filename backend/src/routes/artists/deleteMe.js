@@ -1,6 +1,6 @@
 const express = require("express");
 
-module.exports = (db, authMiddleware) => {
+module.exports = (db, authMiddleware, isArtist) => {
     const router = express.Router();
     // Deletes the artist registration (reverts the user to a standard user)
     router.delete("/me", authMiddleware, isArtist, async (req, res) => {

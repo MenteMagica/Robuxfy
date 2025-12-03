@@ -22,5 +22,8 @@ module.exports = (db, authMiddleware, isArtist) => {
         router.use(`/${prefix}`, routeRouter);
     });
 
+    const uploadRouter = require("./upload")(authMiddleware, isArtist);
+    router.use("/upload", uploadRouter);
+
     return router;
 };

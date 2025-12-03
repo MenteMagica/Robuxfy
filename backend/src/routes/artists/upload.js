@@ -1,17 +1,17 @@
 const express = require("express");
 
-module.exports = () => {
+module.exports = (authMiddleware, isArtist) => {
     const router = express.Router();
     const multer = require("multer");
     const upload = multer({ storage: multer.memoryStorage() });
     const validatePath = require("../../services/minio/mediaValidation");
     const { uploadMedia } = require("../../services/minio/mediaController");
-    const { authMiddleware } = require("../../middlewares/authToken");
 
     // upload archives
     router.post(
         "/upload",
         authMiddleware,
+        isArtist,
         upload.array("files"),
         async (req, res) => {
             try {

@@ -1,5 +1,5 @@
 module.exports = {
-    auth: require("./auth"),
+    auth: require("./authToken"),
     isArtist: require("./isArtist"),
     logger: require("./logger"),
 };

@@ -11,26 +11,6 @@ const config = {
 
 const minioClient = new minio.Client(config);
 
-async function initializeMinio(bucketName) {
-    try {
-        const exists = await minioClient.bucketExists(bucketName);
-
-        if (!exists) {
-            throw new Error(
-                `Error: the required bucket "${bucketName}" does not exist.`
-            );
-        } else {
-            console.log(
-                `MinIO: connection established, bucket "${bucketName}" found.`
-            );
-        }
-    } catch (error) {
-        console.error("MinIO error:", error.message);
-        throw error;
-    }
-}
-
 module.exports = {
     minioClient,
-    initializeMinio,
 };

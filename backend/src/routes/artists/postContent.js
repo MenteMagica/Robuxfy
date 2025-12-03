@@ -1,12 +1,11 @@
 const express = require("express");
 
-module.exports = (db, authMiddleware) => {
+module.exports = (db, authMiddleware, isArtist) => {
     const router = express.Router();
 
     const { insertMusic } = require("../../services/artists/insertMusic");
     const { insertPodcast } = require("../../services/artists/insertPodcast");
     const { insertAlbum } = require("../../services/artists/insertAlbum");
-    const { isArtist } = require("../middlewares/isArtist");
 
     // creates a new content (music, podcast or album)
     router.post("/content", authMiddleware, isArtist, async (req, res) => {

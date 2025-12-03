@@ -1,6 +1,6 @@
 const express = require("express");
 
-module.exports = (db, authMiddleware) => {
+module.exports = (db, authMiddleware, isArtist) => {
     const router = express.Router();
     // Get the artist's musics sorted in descending order by release date.
     router.get("/me/musics", authMiddleware, isArtist, async (req, res) => {

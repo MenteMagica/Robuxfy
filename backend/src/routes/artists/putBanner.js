@@ -1,6 +1,6 @@
 const express = require("express");
 
-module.exports = (db, authMiddleware) => {
+module.exports = (db, authMiddleware, isArtist) => {
     const router = express.Router();
     const multer = require("multer");
     const upload = multer({ storage: multer.memoryStorage() });
