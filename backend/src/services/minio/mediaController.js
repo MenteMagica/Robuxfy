@@ -52,4 +52,5 @@ async function deleteMedia(objectKey) {
 module.exports = {
     uploadMedia,
     deleteMedia,
+    MINIO_BUCKET,
 };
