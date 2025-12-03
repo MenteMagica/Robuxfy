@@ -1,0 +1,8 @@
+# Node packages
+node_modules/
+
+# Environment variables
+.env
+
+# MinIO local storage
+.minio*
