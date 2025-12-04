@@ -1,0 +1,43 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
+
+/* --- 1. Variáveis Globais e Reset --- */
+
+:root {
+    /* Cores */
+    --primary-color: #3399ff;
+    --primary-hover-color: #5bb0ff;
+    --dark-bg-primary: #181a1e;
+    --dark-bg-secondary: #111214;
+    --text-light: #ffffff;
+    --text-dark: #888;
+    --text-disabled: #777;
+    --disabled-bg: #2a3b4c;
+    --card-bg: #181818;
+    --text-white: #ffffff;
+    --input-border: #555;
+    --bg-color: #121212;
+    --search-bg: #2a2a2a;
+    --text-inactive: #b3b3b3;
+    --text-active: #ffffff;
+    --icon-size: 18px;
+
+    /* Fontes */
+    --font-main: "Quicksand", "Questrial", Arial, sans-serif;
+
+    /* Animações */
+    --transition-speed: 0.6s;
+    --transition-easing: ease-in-out;
+    --micro-transition-speed: 0.2s;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none !important;
+}
+
+html {
+    /* Melhora a rolagem */
+    scroll-behavior: smooth;
+}

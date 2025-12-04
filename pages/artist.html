@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Robuxfy | Artist Dashboard</title>
+    <link rel="stylesheet" href="../styles/general.css" />
+    <link rel="stylesheet" href="../styles/home.css" />
+    <link rel="stylesheet" href="../styles/artist.css" />
+    <link rel="icon" href="../assets/images/Robuxfy_Logo.png" type="image/x-icon" />
+</head>
+
+<body>
+    <header class="app-header">
+        <div class="header-left">
+            <nav class="nav-links">
+                <a href="home.html" class="nav-item">
+                    <img src="../assets/icons/Home.png" alt="Home" class="icon-img" />
+                    Home
+                </a>
+                <a href="home.html" class="nav-item">
+                    <img src="../assets/icons/Suggestions.png" alt="Discover" class="icon-img" />
+                    Discover
+                </a>
+                <a href="#" class="nav-item active">
+                    <img src="../assets/icons/Disks.png" alt="My Disks" class="icon-img" />
+                    My Disks
+                </a>
+            </nav>
+        </div>
+
+        <div class="header-center">
+            <div class="search-container">
+                <img src="../assets/icons/Search.png" alt="Search" class="icon-img search-icon" />
+                <input type="text" placeholder="Search your library..." />
+            </div>
+        </div>
+
+        <div class="header-right">
+            <button id="open-upload-modal-btn" class="action-btn" title="Upload New Track">
+                <img src="../assets/icons/Upload.png" class="icon-img" style="opacity: 1;" />
+            </button>
+
+            <!-- ADICIONADO ID AQUI -->
+            <div class="profile-avatar" id="profile-avatar-btn">
+                <img src="../assets/icons/Profile.png" alt="User" />
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+
+        <main class="content-area main-bordered artist-dashboard">
+
+            <div class="artist-header-banner">
+                <div class="artist-profile-row">
+                    <div class="artist-img-large">
+                        <img src="../assets/icons/Profile.png" alt="Artist">
+                    </div>
+                    <div class="artist-info-text">
+                        <span class="verified-badge">✓ Verified Artist</span>
+                        <h1>Angry Artist</h1>
+                        <p>1,234,567 monthly listeners</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Streams</h3>
+                    <div class="stat-number">4.5M</div>
+                    <div class="stat-growth positive">↑ 12% this week</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Likes</h3>
+                    <div class="stat-number">85.2K</div>
+                    <div class="stat-growth positive">↑ 5% this week</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Top Song</h3>
+                    <div class="stat-number">"My First Hit"</div>
+                    <div class="stat-growth">1.2M plays</div>
+                </div>
+            </div>
+
+            <section class="chart-section-wrapper">
+                <h2>Audience Growth</h2>
+                <div class="chart-container-large">
+                    <svg viewBox="0 0 1000 300" class="main-chart-svg" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+                                <stop offset="0%" stop-color="#3399ff" stop-opacity="0.4" />
+                                <stop offset="100%" stop-color="#3399ff" stop-opacity="0" />
+                            </linearGradient>
+                        </defs>
+                        <path
+                            d="M0,250 C100,200 200,280 300,150 C400,100 500,200 600,120 C700,50 800,100 900,50 L1000,20 L1000,300 L0,300 Z"
+                            fill="url(#chartGradient)"></path>
+                        <path
+                            d="M0,250 C100,200 200,280 300,150 C400,100 500,200 600,120 C700,50 800,100 900,50 L1000,20"
+                            fill="none" stroke="#3399ff" stroke-width="3"></path>
+                    </svg>
+                    <div class="chart-labels">
+                        <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="discography-section">
+                <div class="discography-header-row">
+                    <h2>Your Discography</h2>
+                    <div class="discography-filters">
+                        <button class="filter-btn active" data-filter="tracks">Tracks</button>
+                        <button class="filter-btn" data-filter="albums">Albums</button>
+                    </div>
+                </div>
+
+                <div class="tracks-table-header">
+                    <span class="col-1">#</span>
+                    <span class="col-2">Title</span>
+                    <span class="col-3">Album/Type</span>
+                    <span class="col-4">Likes</span>
+                    <span class="col-5">Date</span>
+                    <span class="col-6">Status</span>
+                    <span class="col-7"></span>
+                </div>
+
+                <div id="uploaded-tracks-list">
+                    <!-- O CONTEÚDO É GERADO PELO JS -->
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL DE UPLOAD -->
+    <div id="upload-modal-overlay" class="modal-overlay">
+        <div class="upload-modal-card">
+            <button class="close-modal-btn" id="close-upload-btn">&times;</button>
+
+            <div class="upload-modal-content">
+                <div class="upload-col-left">
+                    <h3 class="upload-section-title">New Release</h3>
+
+                    <div class="upload-type-selector">
+                        <button class="type-btn active" data-type="single">Single</button>
+                        <button class="type-btn" data-type="album">Album</button>
+                        <button class="type-btn" data-type="podcast">Podcast</button>
+                    </div>
+
+                    <div class="cover-upload-container" id="cover-drop-zone">
+                        <input type="file" id="cover-input" accept="image/*" style="display: none;">
+                        <div class="cover-placeholder" id="cover-preview">
+                            <span class="plus-icon">+</span>
+                            <span class="cover-text">Insert Main Cover</span>
+                        </div>
+                    </div>
+
+                    <div id="single-upload-container">
+                        <div class="input-group">
+                            <label id="title-label">Track Title</label>
+                            <input type="text" id="track-title-input" class="clean-input"
+                                placeholder="e.g. Summer Vibes">
+                        </div>
+                    </div>
+
+                    <div id="album-upload-container" style="display: none;">
+                        <div class="input-group">
+                            <label>Album Title</label>
+                            <input type="text" id="album-title-input" class="clean-input"
+                                placeholder="e.g. Greatest Hits">
+                        </div>
+
+                        <label class="section-label-small">Tracks & Credits</label>
+                        <div class="album-tracks-scroll" id="album-tracks-list">
+                            <p class="empty-album-msg">Select files below to add tracks...</p>
+                        </div>
+                    </div>
+
+                    <div class="audio-file-input-wrapper">
+                        <label for="audio-file-input" class="audio-label">
+                            <img src="../assets/icons/Upload.png" class="tiny-icon">
+                        </label>
+                        <input type="file" id="audio-file-input" accept="audio/*" style="display: none;">
+                    </div>
+                </div>
+
+                <div class="vertical-separator"></div>
+
+                <div class="upload-col-right">
+                    <h3 class="upload-section-title text-green">Global Credits</h3>
+                    <p class="helper-text">These credits apply to the whole album/single unless overridden.</p>
+
+                    <div class="input-group">
+                        <label>Main Artist</label>
+                        <input type="text" id="artist-input" class="clean-input" value="Angry Artist" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Composer (Default)</label>
+                        <input type="text" id="composer-input" class="clean-input" placeholder="+ Add composer">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Producer (Default)</label>
+                        <input type="text" id="producer-input" class="clean-input" placeholder="+ Add producer">
+                    </div>
+
+                    <div class="publish-footer">
+                        <button id="cancel-upload-btn" class="cancel-btn">Cancel</button>
+                        <button id="publish-btn" class="publish-btn">Publish</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE PERFIL (COPIADO DA HOME) -->
+    <div id="profile-modal-overlay" class="modal-overlay">
+        <div class="profile-modal-card">
+            <button class="close-profile-btn" id="close-profile-btn">
+                &times;
+            </button>
+
+            <div class="profile-layout">
+                <div class="profile-sidebar">
+                    <div class="profile-header-info">
+                        <div class="profile-big-avatar">
+                            <img src="../assets/icons/Profile.png" alt="User Profile" />
+                        </div>
+                        <div class="profile-texts">
+                            <h2>Angry Artist</h2>
+                            <span>Artist</span>
+                        </div>
+                    </div>
+
+                    <div class="profile-actions-row">
+                        <button class="profile-btn-gray">Edit Profile</button>
+                        <button class="profile-btn-gray">Manage</button>
+                    </div>
+
+                    <div class="premium-card">
+                        <div class="premium-header">
+                            <img src="../assets/images/Robuxfy_Logo_Premium.png" class="premium-logo" alt="Logo" />
+                            <h3>Subscribe to <br />Robuxfy PREMIUM</h3>
+                        </div>
+                        <p class="premium-sub">Free for the first month</p>
+                        <button class="premium-btn">After, $86.99/month</button>
+                    </div>
+
+                    <ul class="profile-menu-links">
+                        <li><a href="#">Read terms of use</a></li>
+                        <li><a href="#">Change account</a></li>
+                        <li><a href="#" class="logout-text">Logout</a></li>
+                    </ul>
+                </div>
+
+                <div class="profile-main-content">
+                    <h3 class="section-title">Montly listeners</h3>
+
+                    <div class="activity-chart-container">
+                        <div class="y-axis">
+                            <span>40</span>
+                            <span>30</span>
+                            <span>20</span>
+                            <span>10</span>
+                            <span>0</span>
+                        </div>
+                        <div class="chart-area">
+                            <svg viewBox="0 0 400 150" class="chart-svg">
+                                <path d="M0,100 C50,100 100,95 150,80 C200,65 250,120 300,100 C350,80 400,20 400,20"
+                                    fill="none" stroke="#3399ff" stroke-width="3" stroke-linecap="round" />
+                            </svg>
+                            <div class="x-axis">
+                                <span>January</span>
+                                <span>February</span>
+                                <span>March</span>
+                                <span>April</span>
+                                <span>May</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-row">
+                        <p>
+                            Total of <span class="green-text">1,231</span> minutes was spent on you
+                            in 2025
+                        </p>
+                        <button class="stats-btn">See more statistics</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="track-stats-modal-overlay" class="modal-overlay">
+        <div class="upload-modal-card" style="width: 900px;"> <button class="close-modal-btn"
+                id="close-track-stats-btn">&times;</button>
+
+            <div class="track-stats-content">
+                <div class="t-stats-header">
+                    <div class="t-stats-cover">
+                        <img id="ts-cover-img" src="" alt="Cover">
+                    </div>
+                    <div class="t-stats-info">
+                        <span class="status-live" id="ts-status">Live</span>
+                        <h2 id="ts-title">Track Title</h2>
+                        <p id="ts-album">Album Name • Released <span id="ts-date">Date</span></p>
+                    </div>
+                    <div class="t-stats-actions">
+                        <button class="profile-btn-gray">Edit Metadata</button>
+                        <button class="profile-btn-gray">Share</button>
+                    </div>
+                </div>
+
+                <div class="vertical-separator" style="margin: 20px 0; width: 100%; height: 1px;"></div>
+
+                <div class="stats-grid" style="margin-bottom: 30px;">
+                    <div class="stat-card">
+                        <h3>Total Streams</h3>
+                        <div class="stat-number" id="ts-streams">0</div>
+                        <div class="stat-growth positive">↑ Realtime</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Save Rate</h3>
+                        <div class="stat-number" id="ts-save-rate">0%</div>
+                        <div class="stat-growth">saves / listeners</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Playlists</h3>
+                        <div class="stat-number" id="ts-playlists">0</div>
+                        <div class="stat-growth positive">Added this week</div>
+                    </div>
+                </div>
+
+                <div class="chart-section-wrapper">
+                    <div class="discography-header-row">
+                        <h2>Audience Retention</h2>
+                        <div class="discography-filters">
+                            <button class="filter-btn active">24h</button>
+                            <button class="filter-btn">7d</button>
+                            <button class="filter-btn">28d</button>
+                        </div>
+                    </div>
+
+                    <div class="chart-container-large" style="height: 200px;">
+                        <svg viewBox="0 0 800 200" class="main-chart-svg" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="retentionGradient" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stop-color="#1db954" stop-opacity="0.3" />
+                                    <stop offset="100%" stop-color="#1db954" stop-opacity="0" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M0,50 Q200,50 400,100 T800,180 L800,200 L0,200 Z" fill="url(#retentionGradient)">
+                            </path>
+                            <path d="M0,50 Q200,50 400,100 T800,180" fill="none" stroke="#1db954" stroke-width="3">
+                            </path>
+                        </svg>
+                        <div class="chart-labels">
+                            <span>0:00</span><span>0:30</span><span>1:00</span><span>1:30</span><span>2:00</span><span>End</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 0;">
+                    <div class="stat-card">
+                        <h3>Source of Streams</h3>
+                        <div class="source-bar-container" style="margin-top: 15px;">
+                            <div class="source-row">
+                                <span>Your Profile</span>
+                                <div class="progress-bg">
+                                    <div class="progress-fill" style="width: 45%;"></div>
+                                </div>
+                                <span>45%</span>
+                            </div>
+                            <div class="source-row">
+                                <span>User Playlists</span>
+                                <div class="progress-bg">
+                                    <div class="progress-fill" style="width: 30%;"></div>
+                                </div>
+                                <span>30%</span>
+                            </div>
+                            <div class="source-row">
+                                <span>Search</span>
+                                <div class="progress-bg">
+                                    <div class="progress-fill" style="width: 25%;"></div>
+                                </div>
+                                <span>25%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card"
+                        style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                        <h3 style="margin-bottom: 15px;">Generated Revenue</h3>
+                        <div class="stat-number" style="color: #1db954; font-size: 42px;">$1,240.50</div>
+                        <p style="color: #777; font-size: 12px; margin-top: 10px;">Est. earnings for this track</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/artist.js"></script>
+</body>
+
+</html>

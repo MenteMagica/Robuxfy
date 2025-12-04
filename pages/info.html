@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> Setup profile </title>
+    <link rel="stylesheet" href="../styles/info.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../styles/general.css" />
+    <link rel="icon" type="image/x-icon" href="../assets/images/Robuxfy_Logo.png" />
+  </head>
+  <body>
+    <div class="main-card">
+      <div class="card-left">
+        <div class="album-frame">
+          <div class="album-cover"></div>
+          <span class="album-caption">Queen - 1988</span>
+        </div>
+      </div>
+
+      <div class="card-right">
+        <div class="section-box">
+          <h2 class="section-title">YOU</h2>
+
+          <div class="profile-header">
+            <div class="avatar-wrapper">
+              <img src="../assets/icons/Profile.png" alt="Avatar" id="avatarPreview" />
+              <label for="avatarInput" class="edit-badge">
+                <i class="fa-solid fa-pen"></i>
+              </label>
+              <input type="file" id="avatarInput" accept="image/*" hidden />
+            </div>
+
+            <div class="inputs-column">
+              <div class="input-underline">
+                <label>Your name</label>
+                <input
+                  type="text"
+                  id="nameInput"
+                  placeholder="your_name_here"
+                />
+              </div>
+
+              <div class="input-box-wrapper">
+                <label>Date of birth</label>
+                <input type="date" id="dateInput" class="date-box" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-box">
+          <h2 class="section-title">INTERESTS</h2>
+
+          <div class="cards-row">
+            <div class="interest-card" onclick="toggleInterest(this)">
+              <div class="card-label">
+                <i class="fa-solid fa-music"></i> MUSIC
+              </div>
+              <img src="../assets/images/MichaelJackson.jpg" alt="Music" />
+              <div class="check-icon">
+                <i class="fa-solid fa-check"></i>
+              </div>
+            </div>
+
+            <div class="interest-card" onclick="toggleInterest(this)">
+              <div class="card-label">
+                <i class="fa-solid fa-microphone"></i> PODCAST
+              </div>
+              <img src="../assets/images/FlowPodcast.jpg" alt="Podcast" />
+              <div class="check-icon">
+                <i class="fa-solid fa-check"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-action">
+          <button class="btn-save" id="saveBtn" disabled>
+            Save and Continue
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 1. Referências aos elementos
+      const avatarInput = document.getElementById("avatarInput");
+      const avatarPreview = document.getElementById("avatarPreview");
+      const nameInput = document.getElementById("nameInput"); // Novo
+      const dateInput = document.getElementById("dateInput"); // Novo
+      const saveBtn = document.getElementById("saveBtn");
+
+      // 2. Lógica de Upload de Foto
+      avatarInput.addEventListener("change", function () {
+        const file = this.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            avatarPreview.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // 3. Adiciona "ouvintes" para quando o usuário digitar nome ou mudar a data
+      nameInput.addEventListener("input", checkButtonState);
+      dateInput.addEventListener("input", checkButtonState);
+
+      // 4. Função de Seleção de Interesses
+      function toggleInterest(card) {
+        card.classList.toggle("active");
+        checkButtonState(); // Verifica o botão toda vez que clica num card
+      }
+
+      // 5. Função Principal de Validação
+      function checkButtonState() {
+        // Conta quantos cards estão ativos
+        const activeCards = document.querySelectorAll(".interest-card.active");
+
+        // Verifica se os campos tem texto (trim remove espaços vazios no começo/fim)
+        const hasName = nameInput.value.trim() !== "";
+        const hasDate = dateInput.value !== "";
+        const hasInterest = activeCards.length > 0;
+
+        // SÓ libera se TUDO for verdadeiro
+        if (hasName && hasDate && hasInterest) {
+          saveBtn.disabled = false;
+          saveBtn.style.opacity = "1";
+          saveBtn.style.cursor = "pointer";
+        } else {
+          saveBtn.disabled = true;
+          saveBtn.style.opacity = "0.5";
+          saveBtn.style.cursor = "not-allowed";
+        }
+      }
+    </script>
+  </body>
+</html>
