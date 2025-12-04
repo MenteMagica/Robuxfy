@@ -47,13 +47,6 @@ module.exports = (authMiddleware, isArtist) => {
                 for (let i = 0; i < req.files.length; i++) {
                     const meta = metadatas[i];
 
-                    // valida filetype e type
-                    try {
-                        validatePath(meta);
-                    } catch (err) {
-                        return res.status(400).json({ error: err.message });
-                    }
-
                     const file = req.files[i];
                     const fileInfo = {
                         filename: file.originalname,
@@ -65,7 +58,8 @@ module.exports = (authMiddleware, isArtist) => {
                     const objectKey = await uploadMedia(
                         fileInfo,
                         prefixPath,
-                        meta.filetype
+                        meta.filetype,
+                        meta.type
                     );
 
                     uploadedFiles.push({

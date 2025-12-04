@@ -1,6 +1,10 @@
 const { v4: uuidv4 } = require("uuid");
 const { minioClient } = require("./client");
-const { validateFile, getReadableStream } = require("./mediaValidation");
+const {
+    validateFile,
+    getReadableStream,
+    validatePath,
+} = require("./mediaValidation");
 
 // minio primary bucket
 const MINIO_BUCKET = process.env.MINIO_BUCKET;
@@ -19,8 +23,9 @@ function generateObjectKey(prefixPath, filename) {
 }
 
 // upload media in minio
-async function uploadMedia(fileInfo, prefixPath, category) {
+async function uploadMedia(fileInfo, prefixPath, category, type) {
     validateFile(fileInfo, category); // validation
+    validatePath(category, type);
 
     const fileStream = getReadableStream(fileInfo.file_stream);
     const objectKey = generateObjectKey(prefixPath, fileInfo.filename);

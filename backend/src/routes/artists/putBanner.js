@@ -4,9 +4,8 @@ module.exports = (db, authMiddleware, isArtist) => {
     const router = express.Router();
     const multer = require("multer");
     const upload = multer({ storage: multer.memoryStorage() });
-    const { handleImageUpdate } = require("../../utils/handleImageUpdate");
+    const { updateImage } = require("../../utils/updateImage");
 
-    // insert a new banner image and remove old file
     router.put(
         "/",
         authMiddleware,
@@ -14,17 +13,29 @@ module.exports = (db, authMiddleware, isArtist) => {
         upload.single("banner"),
         async (req, res) => {
             const artistId = req.artistId;
-            const bannerFile = req.file;
+            const imageFile = req.file;
+            let connection;
 
             try {
-                const result = await handleImageUpdate({
-                    db,
+                connection = await db.getConnection();
+                await connection.beginTransaction();
+
+                if (!imageFile) {
+                    throw new Error("No image provided");
+                }
+
+                const params = {
+                    connection,
                     tableName: "artists",
                     columnName: "banner",
                     recordId: artistId,
-                    bannerFile,
+                    imageFile,
                     imageType: "artists_banner",
-                });
+                };
+
+                const result = await updateImage(params);
+
+                await connection.commit();
 
                 res.json({
                     message: "Banner updated successfully",
@@ -32,7 +43,7 @@ module.exports = (db, authMiddleware, isArtist) => {
                     url: result.newObjectKey,
                 });
             } catch (error) {
-                if (connection) connection.rollback();
+                if (connection) await connection.rollback();
                 console.error("PUT /artists/banner error:", error);
 
                 res.status(500).json({

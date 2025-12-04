@@ -15,7 +15,7 @@ module.exports = (db) => {
                 });
             }
 
-            req.artist_id = user_id;
+            req.artistId = user_id;
             next();
         } catch (error) {
             console.error("isArtist middleware error:", error);

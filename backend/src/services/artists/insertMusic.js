@@ -1,5 +1,5 @@
 // insert a single music along with its genres and collaborators
-const insert_music = async (connection, artist_id, data) => {
+const insertMusic = async (connection, artist_id, data) => {
     const {
         title,
         release_date,
@@ -80,5 +80,5 @@ const insert_music = async (connection, artist_id, data) => {
 };
 
 module.exports = {
-    insert_music,
+    insertMusic,
 };

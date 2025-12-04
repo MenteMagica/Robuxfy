@@ -1,8 +1,11 @@
-// create an album, upload songs and link them
+// create an album, upload songs, link them, and assign genres & collaborators
 async function insertAlbum(connection, artistId, data) {
     const { title, release_date, new_tracks } = data;
-    const cover = data.find((u) => u.filetype === "images");
-    const tracks = data.filter((u) => u.filetype === "audios");
+    const uploads = data.uploads || [];
+
+    // get cover and audios
+    const cover = uploads.find((u) => u.filetype === "images");
+    const audioFiles = uploads.filter((u) => u.filetype === "audios");
 
     if (!cover) {
         throw new Error("Album cover image is required.");
@@ -12,18 +15,11 @@ async function insertAlbum(connection, artistId, data) {
         throw new Error("Album requires 'new_tracks' array with music data.");
     }
 
-    if (tracks.length !== new_tracks.length) {
+    if (audioFiles.length !== new_tracks.length) {
         throw new Error(
-            `Track count mismatch: ${new_tracks.length} metadata but ${tracks.length} audio files.`
+            `Track count mismatch: ${new_tracks.length} metadata but ${audioFiles.length} audio files.`
         );
     }
-
-    // combine new_tracks and audio uploads
-    const tracksCombined = new_tracks.map((track, index) => ({
-        title: track.title,
-        description: track.description || null,
-        url: tracks[index].objectKey,
-    }));
 
     if (!title || !release_date) {
         throw new Error("Title and release_date are required.");
@@ -34,39 +30,72 @@ async function insertAlbum(connection, artistId, data) {
         "INSERT INTO images (type, url) VALUES (?, ?)",
         [cover.type, cover.objectKey]
     );
-    const imageId = imageResult.insertId;
+    const coverImageId = imageResult.insertId;
 
     // format date
     const dateToInsert = new Date(release_date).toISOString().slice(0, 10);
 
     // insert album
     const [albumResult] = await connection.query(
-        `
-            INSERT INTO albums (artist_id, title, release_date, cover_image)
-            VALUES (?, ?, ?, ?);
-        `,
-        [artistId, title, dateToInsert, imageId]
+        `INSERT INTO albums (artist_id, title, release_date, cover_image)
+         VALUES (?, ?, ?, ?)`,
+        [artistId, title, dateToInsert, coverImageId]
     );
     const albumId = albumResult.insertId;
 
-    // insert each track
-    const musicValues = tracksCombined.map((track) => [
-        artistId,
-        track.title,
-        dateToInsert,
-        track.url,
-        track.description,
-        imageId,
-        albumId,
-    ]);
+    // insert each track like insertMusic
+    for (let i = 0; i < new_tracks.length; i++) {
+        const track = new_tracks[i];
+        const audio = audioFiles[i];
 
-    await connection.query(
-        `
-            INSERT INTO musics (artist_id, title, release_date, url, description, cover_image, album_id)
-            VALUES ?;
-        `,
-        [musicValues]
-    );
+        // insert music
+        const [musicResult] = await connection.query(
+            `INSERT INTO musics (artist_id, title, release_date, url, description, cover_image, album_id)
+             VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [
+                artistId,
+                track.title,
+                dateToInsert,
+                audio.objectKey,
+                track.description || null,
+                coverImageId,
+                albumId,
+            ]
+        );
+        const musicId = musicResult.insertId;
+
+        // insert genres
+        if (
+            track.genre_ids &&
+            Array.isArray(track.genre_ids) &&
+            track.genre_ids.length > 0
+        ) {
+            const genreValues = track.genre_ids.map((genreId) => [
+                musicId,
+                genreId,
+            ]);
+            await connection.query(
+                "INSERT INTO music_genre (music_id, genre_id) VALUES ?",
+                [genreValues]
+            );
+        }
+
+        // insert collaborators
+        if (
+            track.collaborators &&
+            Array.isArray(track.collaborators) &&
+            track.collaborators.length > 0
+        ) {
+            const collaboratorValues = track.collaborators.map((collabId) => [
+                collabId,
+                musicId,
+            ]);
+            await connection.query(
+                "INSERT INTO artist_music (artist_id, music_id) VALUES ?",
+                [collaboratorValues]
+            );
+        }
+    }
 
     return albumId;
 }

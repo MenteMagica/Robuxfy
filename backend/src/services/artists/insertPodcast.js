@@ -1,5 +1,5 @@
 // insert a podcast along with its genres
-const insert_podcast = async (connection, artist_id, data) => {
+const insertPodcast = async (connection, artist_id, data) => {
     const { title, release_date, description, genre_ids, uploads } = data;
     const cover = uploads.find((u) => u.filetype === "images");
     const audio = uploads.find((u) => u.filetype === "audios");
@@ -56,5 +56,5 @@ const insert_podcast = async (connection, artist_id, data) => {
 };
 
 module.exports = {
-    insert_podcast,
+    insertPodcast,
 };

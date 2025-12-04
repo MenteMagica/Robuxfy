@@ -12,13 +12,13 @@ const allowedTypes = {
     audios: ["musics", "podcasts"],
 };
 
-function validatePath(meta) {
-    if (!["images", "audios"].includes(meta.filetype)) {
+function validatePath(category, type) {
+    if (!["images", "audios"].includes(category)) {
         throw new Error("Invalid filetype.");
     }
 
-    if (!allowedTypes[meta.filetype].includes(meta.type)) {
-        throw new Error(`Invalid type for ${meta.filetype}.`);
+    if (!allowedTypes[category].includes(type)) {
+        throw new Error(`Invalid type for ${category}.`);
     }
 }
 

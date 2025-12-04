@@ -43,14 +43,19 @@ async function updateImage({
     }
 
     // upload a new image
-    const prefixPath = `images/${imageType}`;
+    const prefixPath = `images/${imageType}/`;
     const uploadInfo = {
         file_stream: Readable.from(imageFile.buffer),
         filename: imageFile.originalname,
         mime_type: imageFile.mimetype,
     };
 
-    const newObjectKey = await uploadMedia(uploadInfo, prefixPath, "image");
+    const newObjectKey = await uploadMedia(
+        uploadInfo,
+        prefixPath,
+        "images",
+        imageType
+    );
 
     // insert a new image
     const [imageResult] = await connection.query(
@@ -66,16 +71,12 @@ async function updateImage({
         [newImageId, recordId]
     );
 
-    // delete old image register
-    if (oldImageId) {
-        if (oldObjectKey) {
-            try {
-                await deleteMedia(oldObjectKey);
-            } catch (err) {
-                console.error("Failed to delete old MinIO object:", err);
-            }
+    if (oldObjectKey && oldImageId) {
+        try {
+            await deleteMedia(oldObjectKey);
+        } catch (err) {
+            console.error("Failed to delete old MinIO object:", err);
         }
-
         await connection.query("DELETE FROM images WHERE id = ?", [oldImageId]);
     }
 
