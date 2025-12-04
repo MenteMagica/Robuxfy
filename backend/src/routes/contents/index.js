@@ -25,5 +25,8 @@ module.exports = (db) => {
         router.use(`/${prefix}`, routeRouter);
     });
 
+    const { fileObjectKeyRouter } = require("./getFileObjectKey");
+    router.use("/media", fileObjectKeyRouter);
+
     return router;
 };
